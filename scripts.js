@@ -1,5 +1,5 @@
 
-  const API = "http://localhost:8080/api";
+  const API = "http://186.233.152.174:8080/api";
 
   function toggleSubmenu(id) {
     // Oculta todos os submenus
