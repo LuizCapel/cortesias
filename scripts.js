@@ -1,5 +1,5 @@
 
-  const API = "http://adorable-orelie-luizcapel-af6dbfb3.koyeb.app:8000/api";
+  const API = "https://adorable-orelie-luizcapel-af6dbfb3.koyeb.app/api";
 
   function toggleSubmenu(id) {
     // Oculta todos os submenus
