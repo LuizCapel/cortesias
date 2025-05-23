@@ -1,2 +1,2 @@
-# cortesias.github.io
+# cortesias
 gerenciamento de cortesias
