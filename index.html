@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sistema de Cortesias</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Sistema de Cortesias</h1>
+
+  <!-- Menus principais -->
+  <nav>
+    <button onclick="toggleSubmenu('menuEventos')">Gerenciar Eventos</button>
+    <button onclick="toggleSubmenu('menuPessoas')">Gerenciar Pessoas</button>
+    <button onclick="toggleSubmenu('menuCortesias')">Gerenciar Cortesias</button>
+  </nav>
+
+  <!-- Submenus -->
+  <div id="menuEventos" class="submenu" style="display: none;">
+    <button onclick="mostrar('cadastroEvento')">Cadastrar Evento</button>
+    <button onclick="mostrar('consultaEvento')">Consultar Evento</button>
+  </div>
+
+  <div id="menuPessoas" class="submenu" style="display: none;">
+    <button onclick="mostrar('cadastroPessoa')">Cadastrar Pessoa</button>
+  </div>
+
+  <div id="menuCortesias" class="submenu" style="display: none;">
+    <button onclick="mostrar('solicitarCortesia')">Solicitar Cortesia</button>
+    <button onclick="mostrar('validarCortesia')">Validar Cortesia</button>
+    <button onclick="mostrar('consultaCortesiasEvento')">Consultar Cortesia Evento</button>
+  </div>
+
+  <!-- Cadastro de Evento -->
+  <section id="cadastroEvento">
+    <h2>Cadastro de Evento</h2>
+    <input id="nomeEvento" placeholder="Nome do Evento">
+    <input id="dataEvento" type="date">
+    <input id="localEvento" placeholder="Local">
+    <input id="responsavelEvento" placeholder="Responsável">
+    <input id="quantidadeCortesias" type="number" placeholder="Quantidade de Cortesias">
+    <button onclick="cadastrarEvento()">Cadastrar</button>
+    <div class="resultado" id="resCadastroEvento"></div>
+  </section>
+
+  <!-- Consulta de Evento -->
+<!--	<section id="consultaEvento" style="display:none;">
+	  <h2>Consulta de Eventos</h2>
+	  <button onclick="listarEventos()">Listar Todos</button><br><br>
+	  Buscar por ID: <input id="buscarIdEvento" type="number">
+	  <button onclick="buscarEventoPorId()">Buscar</button><br><br>
+	  <div id="resConsultaEvento" class="resultado"></div>
+	</section> -->
+<section id="consultaEvento" style="display:none;">
+  <h2>Consulta de Eventos</h2>
+  <button onclick="listarEventos()">Listar Todos</button><br><br>
+  <label for="eventosSelect">Selecione um evento:</label>
+  <select id="eventosSelect"></select>
+
+  <button onclick="buscarEventoSelecionado()">Buscar</button><br><br>
+  <div id="resConsultaEvento" class="resultado"></div>
+</section>
+
+  <!-- Cadastro de Pessoa -->
+  <section id="cadastroPessoa">
+    <h2>Cadastro de Pessoa</h2>
+    <input id="nomePessoa" placeholder="Nome Completo">
+    <input id="cpfPessoa" placeholder="CPF (somente números)">
+    <input id="dataNascimentoPessoa" type="date">
+    <input id="cidadePessoa" placeholder="Cidade">
+    <input id="telefonePessoa" placeholder="Telefone">
+    <input id="emailPessoa" placeholder="Email">
+    <button onclick="cadastrarPessoa()">Cadastrar</button>
+    <div class="resultado" id="resCadastroPessoa"></div>
+  </section>
+
+  <!-- Solicitar Cortesia -->
+  <section id="solicitarCortesia">
+    <h2>Solicitar Cortesia</h2>
+    <input id="eventoIdSolicitar" type="number" placeholder="ID do Evento">
+    <input id="cpfSolicitar" placeholder="CPF da Pessoa">
+    <button onclick="solicitarCortesia()">Solicitar</button>
+    <div class="resultado" id="resSolicitarCortesia"></div>
+  </section>
+
+  <!-- Validar Cortesia -->
+  <section id="validarCortesia">
+    <h2>Validar Cortesia</h2>
+    <input id="eventoIdValidar" type="number" placeholder="ID do Evento">
+    <input id="codigoCortesia" placeholder="Código da Cortesia">
+    <button onclick="validarCortesia()">Validar</button>
+    <div class="resultado" id="resValidarCortesia"></div>
+  </section>
+
+  <!-- Listar Cortesia -->
+  <section id="consultaCortesiasEvento" style="display:none;">
+    <h2>Consultar Cortesias de um Evento</h2>
+    Evento ID: <input id="eventoIdConsultaCortesias" type="number">
+    <label>
+      Filtro:
+      <select id="filtroResgate">
+        <option value="">Todas</option>
+        <option value="true">Resgatadas</option>
+        <option value="false">Não resgatadas</option>
+      </select>
+    </label>
+    <button onclick="listarCortesiasEvento()">Listar Cortesias</button>
+    <button onclick="exportarCSV()">Exportar CSV</button>
+    <div id="resConsultaCortesias" class="resultado"></div>
+  </section>
+
+  <script src="scripts.js"></script>
+</body>
+</html>
+
