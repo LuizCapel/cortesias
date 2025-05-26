@@ -23,6 +23,7 @@
 
   <div id="menuPessoas" class="submenu" style="display: none;">
     <button onclick="mostrar('cadastroPessoa')">Cadastrar Pessoa</button>
+	<button onclick="mostrar('listarPessoas')">Listar Pessoas</button>
   </div>
 
   <div id="menuCortesias" class="submenu" style="display: none;">
@@ -47,18 +48,32 @@
 <!--	<section id="consultaEvento" style="display:none;">
 	  <h2>Consulta de Eventos</h2>
 	  <button onclick="listarEventos()">Listar Todos</button><br><br>
-	  Buscar por ID: <input id="buscarIdEvento" type="number">
-	  <button onclick="buscarEventoPorId()">Buscar</button><br><br>
+	  <label for="eventosSelect">Selecione um evento:</label>
+	  <select id="eventosSelect"></select>
+
+	  <button onclick="buscarEventoSelecionado()">Buscar</button><br><br>
 	  <div id="resConsultaEvento" class="resultado"></div>
 	</section> -->
 <section id="consultaEvento" style="display:none;">
-  <h2>Consulta de Eventos</h2>
-  <button onclick="listarEventos()">Listar Todos</button><br><br>
-  <label for="eventosSelect">Selecione um evento:</label>
-  <select id="eventosSelect"></select>
+  <h2>Consultar Eventos</h2>
+  <input id="filtroNomeEvento" placeholder="Filtrar por nome">
+  <input id="filtroDataEvento" type="date" placeholder="Filtrar por data">
+  <input id="filtroLocalEvento" placeholder="Filtrar por local">
+  <input id="filtroResponsavelEvento" placeholder="Filtrar por responsável">
+  <button onclick="buscarEventos()">Buscar</button>
+  <div id="tabelaEventos" class="resultado"></div>
+</section>
 
-  <button onclick="buscarEventoSelecionado()">Buscar</button><br><br>
-  <div id="resConsultaEvento" class="resultado"></div>
+<section id="editarEvento" style="display:none;">
+  <h2>Editar Evento</h2>
+  <input id="editEventoId" type="hidden">
+  <input id="editNomeEvento" placeholder="Nome">
+  <input id="editDataEvento" type="date">
+  <input id="editLocalEvento" placeholder="Local">
+  <input id="editResponsavelEvento" placeholder="Responsável">
+  <input id="editQtdCortesiasEvento" type="number" placeholder="Quantidade de cortesias">
+  <button onclick="salvarEdicaoEvento()">Salvar Alterações</button>
+  <div class="resultado" id="resEditarEvento"></div>
 </section>
 
   <!-- Cadastro de Pessoa -->
@@ -74,10 +89,33 @@
     <div class="resultado" id="resCadastroPessoa"></div>
   </section>
 
+	<section id="listarPessoas" style="display:none;">
+	  <h2>Listar Pessoas</h2>
+	  <input id="filtroNome" placeholder="Filtrar por nome">
+	  <input id="filtroCidade" placeholder="Filtrar por cidade">
+	  <input id="filtroCPF" placeholder="Filtrar por CPF">
+	  <button onclick="buscarPessoas()">Buscar</button>
+	  <div id="tabelaPessoas" class="resultado"></div>
+	</section>
+
+	<section id="editarPessoa" style="display:none;">
+	  <h2>Editar Pessoa</h2>
+	  <input id="editId" type="hidden">
+	  <input id="editNome" placeholder="Nome">
+	  <input id="editCpf" placeholder="CPF">
+	  <input id="editDataNascimento" type="date">
+	  <input id="editCidade" placeholder="Cidade">
+	  <input id="editTelefone" placeholder="Telefone">
+	  <input id="editEmail" placeholder="Email">
+	  <button onclick="salvarEdicaoPessoa()">Salvar Alterações</button>
+	  <div class="resultado" id="resEditarPessoa"></div>
+	</section>
+
   <!-- Solicitar Cortesia -->
   <section id="solicitarCortesia">
     <h2>Solicitar Cortesia</h2>
-    <input id="eventoIdSolicitar" type="number" placeholder="ID do Evento">
+<!--    <input id="eventoIdSolicitar" type="number" placeholder="ID do Evento"> -->
+    <select id="eventoIdSolicitar"></select>
     <input id="cpfSolicitar" placeholder="CPF da Pessoa">
     <button onclick="solicitarCortesia()">Solicitar</button>
     <div class="resultado" id="resSolicitarCortesia"></div>
@@ -95,7 +133,9 @@
   <!-- Listar Cortesia -->
   <section id="consultaCortesiasEvento" style="display:none;">
     <h2>Consultar Cortesias de um Evento</h2>
-    Evento ID: <input id="eventoIdConsultaCortesias" type="number">
+<!--    Evento ID: <input id="eventoIdConsultaCortesias" type="number"> -->
+	<label for="eventosSelectCortesia">Selecione um evento:</label>
+	  <select id="eventosSelectCortesia"></select>
     <label>
       Filtro:
       <select id="filtroResgate">
@@ -112,4 +152,3 @@
   <script src="scripts.js"></script>
 </body>
 </html>
-
