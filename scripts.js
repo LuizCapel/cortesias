@@ -1,5 +1,5 @@
 
-  const API = "exclusive-krista-luizcapel-78430027.koyeb.app/api";
+  const API = "https://exclusive-krista-luizcapel-78430027.koyeb.app/api";
 //  const API = "http://186.233.152.174:8080/api";
 
 
