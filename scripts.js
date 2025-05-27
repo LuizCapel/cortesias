@@ -15,19 +15,13 @@
     });
   }
 
-//  function mostrar(id) {
-//    document.querySelectorAll("section").forEach(sec => sec.style.display = "none");
-//    document.getElementById(id).style.display = "block";
-//    document.querySelectorAll(".resultado").forEach(div => div.innerHTML = "");
-//  }
-
 function mostrar(id) {
   document.querySelectorAll("section").forEach(sec => sec.style.display = "none");
   document.getElementById(id).style.display = "block";
   document.querySelectorAll(".resultado").forEach(div => div.innerHTML = "");
 
-  if (id === "consultaEvento") {
-    carregarEventosSelect("eventosSelect");
+  if (id == "cadastroEvento") {
+    limparFormularioEvento();
   }
   if (id === "consultaCortesiasEvento") {
     carregarEventosSelect("eventosSelectCortesia");
@@ -35,6 +29,71 @@ function mostrar(id) {
   if (id === "solicitarCortesia") {
     carregarEventosSelect("eventoIdSolicitar");
   }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const cpfInput = document.getElementById("cpfPessoa");
+  const telefoneInput = document.getElementById("telefonePessoa");
+  const dataNascInput = document.getElementById("dataNascimentoPessoa");
+
+  cpfInput.addEventListener("input", () => {
+    let value = cpfInput.value.replace(/\D/g, "");
+    value = value.replace(/(\d{3})(\d)/, "$1.$2");
+    value = value.replace(/(\d{3})(\d)/, "$1.$2");
+    value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+    cpfInput.value = value;
+  });
+
+  cpfInput.addEventListener("blur", () => {
+    const rawCpf = cpfInput.value.replace(/\D/g, "");
+    if (!validarCPF(rawCpf)) {
+      alert("CPF inválido.");
+    }
+  });
+
+  telefoneInput.addEventListener("input", () => {
+    let value = telefoneInput.value.replace(/\D/g, "");
+    value = value.replace(/^(\d{2})(\d)/, "($1)$2");
+    value = value.replace(/(\d{5})(\d{4})$/, "$1-$2");
+    telefoneInput.value = value;
+  });
+
+  dataNascInput.addEventListener("blur", () => {
+    const data = new Date(dataNascInput.value);
+    const hoje = new Date();
+    const anos = hoje.getFullYear() - data.getFullYear();
+
+    if (data > hoje || anos > 120) {
+      alert("Data de nascimento inválida.");
+      dataNascInput.focus();
+    }
+  });
+});
+
+function validarCPF(cpf) {
+  cpf = cpf.replace(/[^\d]+/g, "");
+  if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+  let soma = 0, resto;
+
+  for (let i = 1; i <= 9; i++)
+    soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+
+  resto = (soma * 10) % 11;
+  if (resto === 10 || resto === 11) resto = 0;
+  if (resto !== parseInt(cpf.substring(9, 10))) return false;
+
+  soma = 0;
+  for (let i = 1; i <= 10; i++)
+    soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+
+  resto = (soma * 10) % 11;
+  if (resto === 10 || resto === 11) resto = 0;
+  return resto === parseInt(cpf.substring(10, 11));
+}
+
+function formatarDataIso(iso) {
+  const [ano, mes, dia] = iso.split("-");
+  return `${dia}/${mes}/${ano}`;
 }
 
 async function carregarEventosSelect(id) {
@@ -49,7 +108,7 @@ async function carregarEventosSelect(id) {
 
   const eventos = await res.json();
   eventos.forEach(e => {
-    const dataFormatada = new Date(e.data).toLocaleDateString("pt-BR");
+    const dataFormatada = formatarDataIso(e.data);
     const texto = `${e.nome} - ${e.local} - ${e.responsavel} - ${dataFormatada}`;
     const option = document.createElement("option");
     option.value = e.id;
@@ -58,44 +117,126 @@ async function carregarEventosSelect(id) {
   });
 }
 
-  async function cadastrarEvento() {
-    const data = {
-      nome: document.getElementById("nomeEvento").value,
-      data: document.getElementById("dataEvento").value,
-      local: document.getElementById("localEvento").value,
-      responsavel: document.getElementById("responsavelEvento").value,
-      quantidadeCortesias: parseInt(document.getElementById("quantidadeCortesias").value)
-    };
 
-    const res = await fetch(`${API}/eventos`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
+async function cadastrarEvento() {
+  const nome = document.getElementById("nomeEvento").value.trim();
+  const data = document.getElementById("dataEvento").value;
+  const local = document.getElementById("localEvento").value.trim();
+  const responsavel = document.getElementById("responsavelEvento").value.trim();
+  const quantidadeCortesias = parseInt(document.getElementById("quantidadeCortesias").value);
 
-    const msg = res.ok ? "Evento cadastrado com sucesso!" : await res.text();
-    document.getElementById("resCadastroEvento").innerText = msg;
+  // Validações no frontend
+  if (!nome || !data || !local || !responsavel || isNaN(quantidadeCortesias)) {
+    document.getElementById("resCadastroEvento").innerText = "Preencha todos os campos corretamente.";
+    return;
   }
 
-  async function cadastrarPessoa() {
-    const data = {
-      nome: document.getElementById("nomePessoa").value,
-      cpf: document.getElementById("cpfPessoa").value,
-      dataNascimento: document.getElementById("dataNascimentoPessoa").value,
-      cidade: document.getElementById("cidadePessoa").value,
-      telefone: document.getElementById("telefonePessoa").value,
-      email: document.getElementById("emailPessoa").value
-    };
-
-    const res = await fetch(`${API}/pessoas`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
-
-    const msg = await res.text();
-    document.getElementById("resCadastroPessoa").innerText = msg;
+  if (quantidadeCortesias < 0) {
+    document.getElementById("resCadastroEvento").innerText = "Quantidade de cortesias não pode ser negativa.";
+    return;
   }
+
+  const dataEvento = {
+    nome, data, local, responsavel, quantidadeCortesias
+  };
+
+  const res = await fetch(`${API}/eventos`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(dataEvento)
+  });
+
+  const msg = await res.text();
+  const div = document.getElementById("resCadastroEvento");
+
+  if (res.ok) {
+    div.innerText = "Evento cadastrado com sucesso!";
+    limparFormularioEvento();
+  } else {
+    div.innerText = msg;
+  }
+}
+
+// Limpa os campos após sucesso
+function limparFormularioEvento() {
+  document.getElementById("nomeEvento").value = "";
+  document.getElementById("dataEvento").value = "";
+  document.getElementById("localEvento").value = "";
+  document.getElementById("responsavelEvento").value = "";
+  document.getElementById("quantidadeCortesias").value = "";
+}
+
+
+async function cadastrarPessoa() {
+  const nome = document.getElementById("nomePessoa").value.trim();
+  const cpf = document.getElementById("cpfPessoa").value.replace(/\D/g, "");
+  const dataNascimento = document.getElementById("dataNascimentoPessoa").value;
+  const cidade = document.getElementById("cidadePessoa").value.trim();
+  const telefone = document.getElementById("telefonePessoa").value.replace(/\D/g, ""); // remove máscara
+  const email = document.getElementById("emailPessoa").value.trim();
+
+  const div = document.getElementById("resCadastroPessoa");
+
+  if (!nome || !cpf || !dataNascimento || !cidade || !telefone || !email) {
+    div.innerText = "Preencha todos os campos corretamente.";
+    return;
+  }
+
+  if (!validarCPF(cpf)) {
+    alert("CPF inválido.");
+    return;
+  }
+
+  if (telefone.length < 10) {
+    alert("Telefone inválido. Deve conter no mínimo 10 dígitos (incluindo o DDD).");
+    return;
+  }
+
+  if (!validarEmail(email)) {
+    alert("Email inválido.");
+    return;
+  }
+
+  const hoje = new Date();
+  const nascimento = new Date(dataNascimento);
+  const idade = hoje.getFullYear() - nascimento.getFullYear();
+
+  if (nascimento > hoje || idade > 120) {
+    alert("Data de nascimento inválida.");
+    return;
+  }
+
+  const data = { nome, cpf, dataNascimento, cidade, telefone, email };
+
+  const res = await fetch(`${API}/pessoas`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+
+  const msg = await res.text();
+
+  if (res.ok) {
+    div.innerText = "Pessoa cadastrada com sucesso!";
+    limparFormularioPessoa();
+  } else {
+    div.innerText = msg;
+  }
+}
+
+function validarEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
+
+function limparFormularioPessoa() {
+  document.getElementById("nomePessoa").value = "";
+  document.getElementById("cpfPessoa").value = "";
+  document.getElementById("dataNascimentoPessoa").value = "";
+  document.getElementById("cidadePessoa").value = "";
+  document.getElementById("telefonePessoa").value = "";
+  document.getElementById("emailPessoa").value = "";
+}
 
   async function solicitarCortesia() {
     const data = {
@@ -124,54 +265,6 @@ async function carregarEventosSelect(id) {
     const msg = await res.text();
     document.getElementById("resValidarCortesia").innerText = msg;
   }
-
-
-//	async function listarEventos() {
-//	  const res = await fetch(`${API}/eventos`);
-//	  if (!res.ok) {
-//	    document.getElementById("resConsultaEvento").innerText = "Erro ao buscar eventos.";
-//	    return;
-//	  }
-//
-//	  const eventos = await res.json();
-//	  if (!eventos.length) {
-//	    document.getElementById("resConsultaEvento").innerText = "Nenhum evento encontrado.";
-//	    return;
-//	  }
-//
-//	  // Monta a tabela HTML
-//	  let tabela = `
-//	    <table border="1" cellpadding="5" cellspacing="0">
-//	      <thead>
-//		<tr>
-//		  <th>ID</th>
-//		  <th>Nome</th>
-//		  <th>Data</th>
-//		  <th>Local</th>
-//		  <th>Responsável</th>
-//		  <th>Cortesias</th>
-//		</tr>
-//	      </thead>
-//	      <tbody>
-//	  `;
-//
-//	  eventos.forEach(e => {
-//	    tabela += `
-//	      <tr>
-//		<td>${e.id}</td>
-//		<td>${e.nome}</td>
-//		<td>${e.data}</td>
-//		<td>${e.local}</td>
-//		<td>${e.responsavel}</td>
-//		<td>${e.quantidadeCortesias}</td>
-//	      </tr>
-//	    `;
-//	  });
-//
-//	  tabela += `</tbody></table>`;
-//
-//	  document.getElementById("resConsultaEvento").innerHTML = tabela;
-//	}
 
 async function buscarEventos() {
   const nome = document.getElementById("filtroNomeEvento").value;
@@ -204,10 +297,11 @@ async function buscarEventos() {
   `;
 
   eventos.forEach(e => {
+    const dataFormatada = formatarDataIso(e.data);
     tabela += `
       <tr>
         <td>${e.nome}</td>
-        <td>${e.data}</td>
+        <td>${dataFormatada}</td>
         <td>${e.local}</td>
         <td>${e.responsavel}</td>
         <td>${e.quantidadeCortesias}</td>
@@ -279,7 +373,7 @@ async function buscarEventoSelecionado() {
   }
 
   const evento = await res.json();
-  const dataFormatada = new Date(evento.data).toLocaleDateString("pt-BR");
+  const dataFormatada = formatarDataIso(evento.data);
   container.innerText = `ID ${evento.id} - ${evento.nome} (${dataFormatada}) em ${evento.local}`;
 }
 
@@ -319,12 +413,13 @@ async function buscarPessoas() {
   `;
 
   pessoas.forEach(p => {
+    const dataFormatada = formatarDataIso(p.dataNascimento);
     tabela += `
       <tr>
         <td>${p.nome}</td>
         <td>${p.cpf}</td>
         <td>${p.cidade}</td>
-        <td>${p.dataNascimento}</td>
+        <td>${dataFormatada}</td>
         <td>${p.telefone}</td>
         <td>${p.email}</td>
         <td>
@@ -341,26 +436,110 @@ async function buscarPessoas() {
 
 function editarPessoa(pessoa) {
   mostrar("editarPessoa");
+
   document.getElementById("editId").value = pessoa.id;
   document.getElementById("editNome").value = pessoa.nome;
-  document.getElementById("editCpf").value = pessoa.cpf;
+  document.getElementById("editCpf").value = aplicarMascaraCpf(pessoa.cpf);
   document.getElementById("editDataNascimento").value = pessoa.dataNascimento;
   document.getElementById("editCidade").value = pessoa.cidade;
-  document.getElementById("editTelefone").value = pessoa.telefone;
+  document.getElementById("editTelefone").value = aplicarMascaraTelefone(pessoa.telefone);
   document.getElementById("editEmail").value = pessoa.email;
+
+  aplicarMascarasEdicaoPessoa(); // ainda necessário para continuar aplicando conforme digita
+}
+
+function aplicarMascaraCpf(cpf) {
+  cpf = cpf.replace(/\D/g, "");
+  cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
+  cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
+  cpf = cpf.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+  return cpf;
+}
+
+function aplicarMascaraTelefone(tel) {
+  tel = tel.replace(/\D/g, "");
+  tel = tel.replace(/^(\d{2})(\d)/, "($1)$2");
+  tel = tel.replace(/(\d{5})(\d{4})$/, "$1-$2");
+  return tel;
+}
+
+function aplicarMascarasEdicaoPessoa() {
+  const cpfInput = document.getElementById("editCpf");
+  const telefoneInput = document.getElementById("editTelefone");
+  const dataNascInput = document.getElementById("editDataNascimento");
+
+  cpfInput.addEventListener("input", () => {
+    let value = cpfInput.value.replace(/\D/g, "");
+    value = value.replace(/(\d{3})(\d)/, "$1.$2");
+    value = value.replace(/(\d{3})(\d)/, "$1.$2");
+    value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+    cpfInput.value = value;
+  });
+
+  cpfInput.addEventListener("blur", () => {
+    const rawCpf = cpfInput.value.replace(/\D/g, "");
+    if (!validarCPF(rawCpf)) alert("CPF inválido.");
+  });
+
+  telefoneInput.addEventListener("input", () => {
+    let value = telefoneInput.value.replace(/\D/g, "");
+    value = value.replace(/^(\d{2})(\d)/, "($1)$2");
+    value = value.replace(/(\d{5})(\d{4})$/, "$1-$2");
+    telefoneInput.value = value;
+  });
+
+  dataNascInput.addEventListener("blur", () => {
+    const data = new Date(dataNascInput.value);
+    const hoje = new Date();
+    const anos = hoje.getFullYear() - data.getFullYear();
+    if (data > hoje || anos > 120) {
+      alert("Data de nascimento inválida.");
+      dataNascInput.focus();
+    }
+  });
 }
 
 async function salvarEdicaoPessoa() {
   const id = document.getElementById("editId").value;
+  const nome = document.getElementById("editNome").value.trim();
+  const cpf = document.getElementById("editCpf").value.replace(/\D/g, "");
+  const dataNascimento = document.getElementById("editDataNascimento").value;
+  const cidade = document.getElementById("editCidade").value.trim();
+  const telefone = document.getElementById("editTelefone").value.replace(/\D/g, "");
+  const email = document.getElementById("editEmail").value.trim();
 
-  const data = {
-    nome: document.getElementById("editNome").value,
-    cpf: document.getElementById("editCpf").value,
-    dataNascimento: document.getElementById("editDataNascimento").value,
-    cidade: document.getElementById("editCidade").value,
-    telefone: document.getElementById("editTelefone").value,
-    email: document.getElementById("editEmail").value
-  };
+  const div = document.getElementById("resEditarPessoa");
+
+  if (!nome || !cpf || !dataNascimento || !cidade || !telefone || !email) {
+    div.innerText = "Preencha todos os campos corretamente.";
+    return;
+  }
+
+  if (!validarCPF(cpf)) {
+    alert("CPF inválido.");
+    return;
+  }
+
+  if (telefone.length < 10) {
+    alert("Telefone inválido. Deve conter no mínimo 10 dígitos (incluindo o DDD).");
+    return;
+  }
+
+  if (!validarEmail(email)) {
+    alert("Email inválido.");
+    return;
+  }
+
+  const hoje = new Date();
+  const nascimento = new Date(dataNascimento);
+  const idade = hoje.getFullYear() - nascimento.getFullYear();
+
+  if (nascimento > hoje || idade > 120) {
+    alert("Data de nascimento inválida.");
+    return;
+  }
+
+  const data = { nome, cpf, dataNascimento, cidade, telefone, email };
 
   const res = await fetch(`${API}/pessoas/${id}`, {
     method: "PUT",
@@ -368,9 +547,8 @@ async function salvarEdicaoPessoa() {
     body: JSON.stringify(data)
   });
 
-  document.getElementById("resEditarPessoa").innerText = res.ok
-    ? "Pessoa atualizada com sucesso!"
-    : await res.text();
+  const msg = await res.text();
+  div.innerText = res.ok ? "Pessoa atualizada com sucesso!" : msg;
 }
 
 async function excluirPessoa(id) {
@@ -384,60 +562,6 @@ async function excluirPessoa(id) {
   } else {
     alert("Erro ao excluir pessoa.");
   }
-}
-
-let cortesiasAtual = [];
-
-async function listarCortesiasEvento() {
-//  const eventoId = document.getElementById("eventoIdConsultaCortesias").value;
-  const eventoId = document.getElementById("eventosSelectCortesia").value;
-  const filtro = document.getElementById("filtroResgate").value;
-  const url = `${API}/cortesias/evento/${eventoId}` + (filtro ? `?resgatada=${filtro}` : "");
-
-  const res = await fetch(url);
-  const container = document.getElementById("resConsultaCortesias");
-
-  if (!res.ok) {
-    container.innerText = "Erro ao buscar cortesias.";
-    return;
-  }
-
-  const cortesias = await res.json();
-  cortesiasAtual = cortesias;
-
-  if (!cortesias.length) {
-    container.innerText = "Nenhuma cortesia encontrada.";
-    return;
-  }
-
-  let tabela = `
-    <table border="1" cellpadding="5" cellspacing="0">
-      <thead>
-	<tr>
-	  <th>Código</th>
-	  <th>Nome</th>
-	  <th>CPF</th>
-	  <th>Resgatada?</th>
-	  <th>Ação</th>
-	</tr>
-      </thead>
-      <tbody>
-  `;
-
-  cortesias.forEach(c => {
-    tabela += `
-      <tr>
-	<td>${c.codigo}</td>
-	<td>${c.pessoaNome}</td>
-	<td>${c.pessoaCpf}</td>
-	<td>${c.resgatada ? "Sim" : "Não"}</td>
-	<td>${!c.resgatada ? `<button onclick="marcarResgatada('${c.codigo}')">Marcar como resgatada</button>` : ""}</td>
-      </tr>
-    `;
-  });
-
-  tabela += `</tbody></table>`;
-  container.innerHTML = tabela;
 }
 
 async function marcarResgatada(codigo) {
@@ -476,6 +600,59 @@ function exportarCSV() {
   a.download = "cortesias.csv";
   a.click();
   URL.revokeObjectURL(url);
+}
+
+let cortesiasAtual = [];
+
+async function listarCortesiasEvento() {
+  const eventoId = document.getElementById("eventosSelectCortesia").value;
+  const filtro = document.getElementById("filtroResgate").value;
+  const url = `${API}/cortesias/evento/${eventoId}` + (filtro ? `?resgatada=${filtro}` : "");
+
+  const res = await fetch(url);
+  const container = document.getElementById("resConsultaCortesias");
+
+  if (!res.ok) {
+    container.innerText = "Erro ao buscar cortesias.";
+    return;
+  }
+
+  const cortesias = await res.json();
+  cortesiasAtual = cortesias;
+
+  if (!cortesias.length) {
+    container.innerText = "Nenhuma cortesia solicitada.";
+    return;
+  }
+
+  let tabela = `
+    <table border="1" cellpadding="5" cellspacing="0">
+      <thead>
+	<tr>
+	  <th>Código</th>
+	  <th>Nome</th>
+	  <th>CPF</th>
+	  <th>Resgatada?</th>
+	  <th>Ação</th>
+	</tr>
+      </thead>
+      <tbody>
+  `;
+
+  cortesias.forEach(c => {
+    tabela += `
+      <tr>
+	<td>${c.codigo}</td>
+	<td>${c.pessoaNome}</td>
+	<td>${c.pessoaCpf}</td>
+	<td>${c.resgatada ? "Sim" : "Não"}</td>
+	<td>${!c.resgatada ? `<button onclick="marcarResgatada('${c.codigo}')">Marcar como resgatada</button>` : ""}</td>
+      </tr>
+    `;
+  });
+
+  tabela += `</tbody></table>`;
+  container.innerHTML = tabela;
 }
 
 //  mostrar('cadastroEvento'); // inicia na primeira aba
