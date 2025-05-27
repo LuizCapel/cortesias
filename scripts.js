@@ -119,42 +119,50 @@ async function carregarEventosSelect(id) {
 
 
 async function cadastrarEvento() {
-  const nome = document.getElementById("nomeEvento").value.trim();
-  const data = document.getElementById("dataEvento").value;
-  const local = document.getElementById("localEvento").value.trim();
-  const responsavel = document.getElementById("responsavelEvento").value.trim();
-  const quantidadeCortesias = parseInt(document.getElementById("quantidadeCortesias").value);
+	const btn = document.querySelector("#btnCadastrarEvento");
+	btn.disabled = true;
+	try {
+	  const nome = document.getElementById("nomeEvento").value.trim();
+	  const data = document.getElementById("dataEvento").value;
+	  const local = document.getElementById("localEvento").value.trim();
+	  const responsavel = document.getElementById("responsavelEvento").value.trim();
+	  const quantidadeCortesias = parseInt(document.getElementById("quantidadeCortesias").value);
 
-  // Validações no frontend
-  if (!nome || !data || !local || !responsavel || isNaN(quantidadeCortesias)) {
-    document.getElementById("resCadastroEvento").innerText = "Preencha todos os campos corretamente.";
-    return;
-  }
+	  // Validações no frontend
+	  if (!nome || !data || !local || !responsavel || isNaN(quantidadeCortesias)) {
+	    document.getElementById("resCadastroEvento").innerText = "Preencha todos os campos corretamente.";
+	    return;
+	  }
 
-  if (quantidadeCortesias < 0) {
-    document.getElementById("resCadastroEvento").innerText = "Quantidade de cortesias não pode ser negativa.";
-    return;
-  }
+	  if (quantidadeCortesias < 0) {
+	    document.getElementById("resCadastroEvento").innerText = "Quantidade de cortesias não pode ser negativa.";
+	    return;
+	  }
 
-  const dataEvento = {
-    nome, data, local, responsavel, quantidadeCortesias
-  };
+	  const dataEvento = {
+	    nome, data, local, responsavel, quantidadeCortesias
+	  };
 
-  const res = await fetch(`${API}/eventos`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(dataEvento)
-  });
+	  const res = await fetch(`${API}/eventos`, {
+	    method: "POST",
+	    headers: { "Content-Type": "application/json" },
+	    body: JSON.stringify(dataEvento)
+	  });
 
-  const msg = await res.text();
-  const div = document.getElementById("resCadastroEvento");
+	  const msg = await res.text();
+	  const div = document.getElementById("resCadastroEvento");
 
-  if (res.ok) {
-    div.innerText = "Evento cadastrado com sucesso!";
-    limparFormularioEvento();
-  } else {
-    div.innerText = msg;
-  }
+	  if (res.ok) {
+	    div.innerText = "Evento cadastrado com sucesso!";
+	    limparFormularioEvento();
+	  } else {
+	    div.innerText = msg;
+	  }
+	} catch (e) {
+	  alert("Erro ao cadastrar: " + e.message);
+	} finally {
+	  btn.disabled = false; // reativa o botão
+	}
 }
 
 // Limpa os campos após sucesso
@@ -168,60 +176,68 @@ function limparFormularioEvento() {
 
 
 async function cadastrarPessoa() {
-  const nome = document.getElementById("nomePessoa").value.trim();
-  const cpf = document.getElementById("cpfPessoa").value.replace(/\D/g, "");
-  const dataNascimento = document.getElementById("dataNascimentoPessoa").value;
-  const cidade = document.getElementById("cidadePessoa").value.trim();
-  const telefone = document.getElementById("telefonePessoa").value.replace(/\D/g, ""); // remove máscara
-  const email = document.getElementById("emailPessoa").value.trim();
+	const btn = document.querySelector("#btnCadastrarPessoa");
+	btn.disabled = true;
+	try {
+	  const nome = document.getElementById("nomePessoa").value.trim();
+	  const cpf = document.getElementById("cpfPessoa").value.replace(/\D/g, "");
+	  const dataNascimento = document.getElementById("dataNascimentoPessoa").value;
+	  const cidade = document.getElementById("cidadePessoa").value.trim();
+	  const telefone = document.getElementById("telefonePessoa").value.replace(/\D/g, ""); // remove máscara
+	  const email = document.getElementById("emailPessoa").value.trim();
 
-  const div = document.getElementById("resCadastroPessoa");
+	  const div = document.getElementById("resCadastroPessoa");
 
-  if (!nome || !cpf || !dataNascimento || !cidade || !telefone || !email) {
-    div.innerText = "Preencha todos os campos corretamente.";
-    return;
-  }
+	  if (!nome || !cpf || !dataNascimento || !cidade || !telefone || !email) {
+	    div.innerText = "Preencha todos os campos corretamente.";
+	    return;
+	  }
 
-  if (!validarCPF(cpf)) {
-    alert("CPF inválido.");
-    return;
-  }
+	  if (!validarCPF(cpf)) {
+	    alert("CPF inválido.");
+	    return;
+	  }
 
-  if (telefone.length < 10) {
-    alert("Telefone inválido. Deve conter no mínimo 10 dígitos (incluindo o DDD).");
-    return;
-  }
+	  if (telefone.length < 10) {
+	    alert("Telefone inválido. Deve conter no mínimo 10 dígitos (incluindo o DDD).");
+	    return;
+	  }
 
-  if (!validarEmail(email)) {
-    alert("Email inválido.");
-    return;
-  }
+	  if (!validarEmail(email)) {
+	    alert("Email inválido.");
+	    return;
+	  }
 
-  const hoje = new Date();
-  const nascimento = new Date(dataNascimento);
-  const idade = hoje.getFullYear() - nascimento.getFullYear();
+	  const hoje = new Date();
+	  const nascimento = new Date(dataNascimento);
+	  const idade = hoje.getFullYear() - nascimento.getFullYear();
 
-  if (nascimento > hoje || idade > 120) {
-    alert("Data de nascimento inválida.");
-    return;
-  }
+	  if (nascimento > hoje || idade > 120) {
+	    alert("Data de nascimento inválida.");
+	    return;
+	  }
 
-  const data = { nome, cpf, dataNascimento, cidade, telefone, email };
+	  const data = { nome, cpf, dataNascimento, cidade, telefone, email };
 
-  const res = await fetch(`${API}/pessoas`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  });
+	  const res = await fetch(`${API}/pessoas`, {
+	    method: "POST",
+	    headers: { "Content-Type": "application/json" },
+	    body: JSON.stringify(data)
+	  });
 
-  const msg = await res.text();
+	  const msg = await res.text();
 
-  if (res.ok) {
-    div.innerText = "Pessoa cadastrada com sucesso!";
-    limparFormularioPessoa();
-  } else {
-    div.innerText = msg;
-  }
+	  if (res.ok) {
+	    div.innerText = "Pessoa cadastrada com sucesso!";
+	    limparFormularioPessoa();
+	  } else {
+	    div.innerText = msg;
+	  }
+	} catch (e) {
+	  alert("Erro ao cadastrar: " + e.message);
+	} finally {
+	  btn.disabled = false; // reativa o botão
+	}
 }
 
 function validarEmail(email) {
@@ -328,25 +344,33 @@ function editarEvento(e) {
 }
 
 async function salvarEdicaoEvento() {
-  const id = document.getElementById("editEventoId").value;
+	const btn = document.querySelector("#btnEditarEvento");
+	btn.disabled = true;
+	try {
+	  const id = document.getElementById("editEventoId").value;
 
-  const data = {
-    nome: document.getElementById("editNomeEvento").value,
-    data: document.getElementById("editDataEvento").value,
-    local: document.getElementById("editLocalEvento").value,
-    responsavel: document.getElementById("editResponsavelEvento").value,
-    quantidadeCortesias: document.getElementById("editQtdCortesiasEvento").value
-  };
+	  const data = {
+	    nome: document.getElementById("editNomeEvento").value,
+	    data: document.getElementById("editDataEvento").value,
+	    local: document.getElementById("editLocalEvento").value,
+	    responsavel: document.getElementById("editResponsavelEvento").value,
+	    quantidadeCortesias: document.getElementById("editQtdCortesiasEvento").value
+	  };
 
-  const res = await fetch(`${API}/eventos/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  });
+	  const res = await fetch(`${API}/eventos/${id}`, {
+	    method: "PUT",
+	    headers: { "Content-Type": "application/json" },
+	    body: JSON.stringify(data)
+	  });
 
-  document.getElementById("resEditarEvento").innerText = res.ok
-    ? "Evento atualizado com sucesso!"
-    : await res.text();
+	  document.getElementById("resEditarEvento").innerText = res.ok
+	    ? "Evento atualizado com sucesso!"
+	    : await res.text();
+	} catch (e) {
+	  alert("Erro ao editar: " + e.message);
+	} finally {
+	  btn.disabled = false; // reativa o botão
+	}
 }
 
 async function excluirEvento(id) {
@@ -500,55 +524,63 @@ function aplicarMascarasEdicaoPessoa() {
 }
 
 async function salvarEdicaoPessoa() {
-  const id = document.getElementById("editId").value;
-  const nome = document.getElementById("editNome").value.trim();
-  const cpf = document.getElementById("editCpf").value.replace(/\D/g, "");
-  const dataNascimento = document.getElementById("editDataNascimento").value;
-  const cidade = document.getElementById("editCidade").value.trim();
-  const telefone = document.getElementById("editTelefone").value.replace(/\D/g, "");
-  const email = document.getElementById("editEmail").value.trim();
+	const btn = document.querySelector("#btnEditarPessoa");
+	btn.disabled = true;
+	try {
+	  const id = document.getElementById("editId").value;
+	  const nome = document.getElementById("editNome").value.trim();
+	  const cpf = document.getElementById("editCpf").value.replace(/\D/g, "");
+	  const dataNascimento = document.getElementById("editDataNascimento").value;
+	  const cidade = document.getElementById("editCidade").value.trim();
+	  const telefone = document.getElementById("editTelefone").value.replace(/\D/g, "");
+	  const email = document.getElementById("editEmail").value.trim();
 
-  const div = document.getElementById("resEditarPessoa");
+	  const div = document.getElementById("resEditarPessoa");
 
-  if (!nome || !cpf || !dataNascimento || !cidade || !telefone || !email) {
-    div.innerText = "Preencha todos os campos corretamente.";
-    return;
-  }
+	  if (!nome || !cpf || !dataNascimento || !cidade || !telefone || !email) {
+	    div.innerText = "Preencha todos os campos corretamente.";
+	    return;
+	  }
 
-  if (!validarCPF(cpf)) {
-    alert("CPF inválido.");
-    return;
-  }
+	  if (!validarCPF(cpf)) {
+	    alert("CPF inválido.");
+	    return;
+	  }
 
-  if (telefone.length < 10) {
-    alert("Telefone inválido. Deve conter no mínimo 10 dígitos (incluindo o DDD).");
-    return;
-  }
+	  if (telefone.length < 10) {
+	    alert("Telefone inválido. Deve conter no mínimo 10 dígitos (incluindo o DDD).");
+	    return;
+	  }
 
-  if (!validarEmail(email)) {
-    alert("Email inválido.");
-    return;
-  }
+	  if (!validarEmail(email)) {
+	    alert("Email inválido.");
+	    return;
+	  }
 
-  const hoje = new Date();
-  const nascimento = new Date(dataNascimento);
-  const idade = hoje.getFullYear() - nascimento.getFullYear();
+	  const hoje = new Date();
+	  const nascimento = new Date(dataNascimento);
+	  const idade = hoje.getFullYear() - nascimento.getFullYear();
 
-  if (nascimento > hoje || idade > 120) {
-    alert("Data de nascimento inválida.");
-    return;
-  }
+	  if (nascimento > hoje || idade > 120) {
+	    alert("Data de nascimento inválida.");
+	    return;
+	  }
 
-  const data = { nome, cpf, dataNascimento, cidade, telefone, email };
+	  const data = { nome, cpf, dataNascimento, cidade, telefone, email };
 
-  const res = await fetch(`${API}/pessoas/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  });
+	  const res = await fetch(`${API}/pessoas/${id}`, {
+	    method: "PUT",
+	    headers: { "Content-Type": "application/json" },
+	    body: JSON.stringify(data)
+	  });
 
-  const msg = await res.text();
-  div.innerText = res.ok ? "Pessoa atualizada com sucesso!" : msg;
+	  const msg = await res.text();
+	  div.innerText = res.ok ? "Pessoa atualizada com sucesso!" : msg;
+	} catch (e) {
+	  alert("Erro ao editar: " + e.message);
+	} finally {
+	  btn.disabled = false; // reativa o botão
+	}
 }
 
 async function excluirPessoa(id) {
