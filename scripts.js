@@ -1,7 +1,10 @@
 
-  const API = "https://exclusive-krista-luizcapel-78430027.koyeb.app/api";
+//  const API = "https://exclusive-krista-luizcapel-78430027.koyeb.app/api";
 //  const API = "http://186.233.152.174:8080/api";
+  const API = "http://localhost:8080/api";
 
+  let token = null;
+  let permissoes = [];
 
   function toggleSubmenu(id) {
     // Oculta todos os submenus
@@ -69,6 +72,37 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+function cadastrarNovoUsuario() {
+  const email = document.getElementById("novoUsuarioEmail").value;
+  const senha = document.getElementById("novoUsuarioSenha").value;
+  const checkboxes = document.querySelectorAll(".chkPermissao:checked");
+  const permissoesSelecionadas = Array.from(checkboxes).map(cb => cb.value);
+  const resDiv = document.getElementById("resCadastroUsuario");
+
+  if (!email || !senha || permissoesSelecionadas.length === 0) {
+    resDiv.innerText = "Preencha todos os campos.";
+    return;
+  }
+
+  fetch(API + "/auth/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    },
+    body: JSON.stringify({ email, senha, permissoes: permissoesSelecionadas })
+  })
+  .then(res => res.ok ? "Usuário cadastrado com sucesso!" : res.text())
+  .then(msg => {
+    resDiv.innerText = msg;
+    if (msg === "Usuário cadastrado com sucesso!") {
+      document.getElementById("novoUsuarioEmail").value = "";
+      document.getElementById("novoUsuarioSenha").value = "";
+      document.querySelectorAll(".chkPermissao").forEach(cb => cb.checked = false);
+    }
+  });
+}
 
 function validarCPF(cpf) {
   cpf = cpf.replace(/[^\d]+/g, "");
@@ -632,6 +666,84 @@ function exportarCSV() {
   a.download = "cortesias.csv";
   a.click();
   URL.revokeObjectURL(url);
+}
+
+function realizarLogin() {
+	const btn = document.querySelector("#btnLogin");
+	btn.disabled = true;
+	try {
+	  const email = document.getElementById("loginEmail").value;
+	  const senha = document.getElementById("loginSenha").value;
+
+	  fetch(API + "/auth/login", {
+	    method: "POST",
+	    headers: { "Content-Type": "application/json" },
+	    body: JSON.stringify({ email, senha })
+	  })
+	  .then(res => {
+	    if (!res.ok) throw new Error("Login inválido");
+	    return res.json();
+	  })
+	  .then(data => {
+	    token = data.token;
+	    carregarPermissoes();
+	  })
+	  .catch(err => {
+	    document.getElementById("loginMensagem").innerText = err.message;
+	  });
+	} catch (e) {
+	  alert("Erro ao fazer login: " + e.message);
+	} finally {
+	  setTimeout(function() {
+	    btn.disabled = false;
+	  }, 5000);
+	}
+}
+
+function carregarPermissoes() {
+  fetch(API + "/usuario/me", {
+    headers: { Authorization: "Bearer " + token }
+  })
+  .then(res => res.json())
+  .then(user => {
+    permissoes = user.permissoes;
+//    document.getElementById("loginSection").classList.add("hidden");
+document.getElementById("loginSection").style.display = "none";
+//    document.getElementById("menuPrincipal").classList.remove("hidden");
+document.getElementById("menuPrincipal").style.display = "block";
+    mostrarBotoesMenu();
+  });
+}
+
+function mostrarBotoesMenu() {
+  document.getElementById("menuPrincipal").style.display = "block";
+
+  if (permissoes.includes("ADMIN") || permissoes.includes("GERENTE_EVENTOS")) {
+	document.getElementById("btnGerenciarEventos").style.display = "block";
+  }
+  if (permissoes.includes("ADMIN") || permissoes.includes("GERENTE_PESSOAS")) {
+	document.getElementById("btnGerenciarPessoas").style.display = "block";
+  }
+  if (permissoes.includes("ADMIN") || permissoes.includes("GERENTE_CORTESIAS")) {
+	document.getElementById("btnGerenciarCortesias").style.display = "block";
+  }
+  if (permissoes.includes("ADMIN") || permissoes.includes("GERENTE_CORTESIAS")) {
+	document.getElementById("btnGerenciarUsuarios").style.display = "block";
+  }
+}
+
+function logout() {
+  token = null;
+  permissoes = [];
+  document.getElementById("menuPrincipal").style.display = "none";
+  document.getElementById("menuEventos").style.display = "none";
+  document.getElementById("menuPessoas").style.display = "none";
+  document.getElementById("menuCortesias").style.display = "none";
+  document.getElementById("menuUsuarios").style.display = "none";
+  document.getElementById("loginSection").style.display = "block";
+  document.getElementById("loginEmail").value = "";
+  document.getElementById("loginSenha").value = "";
+  document.getElementById("loginMensagem").innerText = "";
 }
 
 let cortesiasAtual = [];

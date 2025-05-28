@@ -8,28 +8,59 @@
 <body>
   <h1>Sistema de Cortesias</h1>
 
+  <div id="loginSection">
+    <h2>Login</h2>
+    <label>Email: <input type="email" id="loginEmail" /></label><br />
+    <label>Senha: <input type="password" id="loginSenha" /></label><br />
+    <button id="btnLogin" onclick="realizarLogin()">Entrar</button>
+    <div id="loginMensagem" style="color:red; margin-top:10px;"></div>
+  </div>
+
   <!-- Menus principais -->
+<div id="menuPrincipal" class="hidden" style="display: none;">
+  <h2>Bem-vindo!</h2>
+  <button onclick="logout()">Sair</button>
+  <h2></h2>
   <nav>
-    <button onclick="toggleSubmenu('menuEventos')">Gerenciar Eventos</button>
-    <button onclick="toggleSubmenu('menuPessoas')">Gerenciar Pessoas</button>
-    <button onclick="toggleSubmenu('menuCortesias')">Gerenciar Cortesias</button>
+    <button id="btnGerenciarEventos" onclick="toggleSubmenu('menuEventos')" style="display: none; margin: 0px 0 5px 0px;">Gerenciar Eventos</button>
+    <button id="btnGerenciarPessoas" onclick="toggleSubmenu('menuPessoas')" style="display: none; margin: 0px 0 5px 0px;">Gerenciar Pessoas</button>
+    <button id="btnGerenciarCortesias" onclick="toggleSubmenu('menuCortesias')" style="display: none; margin: 0px 0 5px 0px;">Gerenciar Cortesias</button>
+    <button id="btnGerenciarUsuarios" onclick="toggleSubmenu('menuUsuarios')" style="display: none; margin: 0px 0 5px 0px;">Gerenciar Usuarios</button>
   </nav>
+</div>
+  
 
   <!-- Submenus -->
   <div id="menuEventos" class="submenu" style="display: none;">
+    <h3>Gerenciar Eventos</h3>
     <button onclick="mostrar('cadastroEvento')">Cadastrar Evento</button>
     <button onclick="mostrar('consultaEvento')">Consultar Evento</button>
   </div>
 
   <div id="menuPessoas" class="submenu" style="display: none;">
+    <h3>Gerenciar Pessoas</h3>
     <button onclick="mostrar('cadastroPessoa')">Cadastrar Pessoa</button>
-	<button onclick="mostrar('listarPessoas')">Listar Pessoas</button>
+    <button onclick="mostrar('listarPessoas')">Listar Pessoas</button>
   </div>
 
   <div id="menuCortesias" class="submenu" style="display: none;">
+    <h3>Gerenciar Cortesias</h3>
     <button onclick="mostrar('solicitarCortesia')">Solicitar Cortesia</button>
     <button onclick="mostrar('validarCortesia')">Validar Cortesia</button>
     <button onclick="mostrar('consultaCortesiasEvento')">Consultar Cortesia Evento</button>
+  </div>
+
+  <div id="menuUsuarios" class="submenu" style="display: none;">
+    <h3>Cadastrar Novo Usuário</h3>
+    <label>Email: <input type="email" id="novoUsuarioEmail"></label><br>
+    <label>Senha: <input type="password" id="novoUsuarioSenha"></label><br>
+    <label>Permissões:</label><br>
+    <label><input type="checkbox" class="chkPermissao" value="ADMIN"> ADMIN</label><br>
+    <label><input type="checkbox" class="chkPermissao" value="GERENTE_EVENTOS"> Gerente de Eventos</label><br>
+    <label><input type="checkbox" class="chkPermissao" value="GERENTE_PESSOAS"> Gerente de Pessoas</label><br>
+    <label><input type="checkbox" class="chkPermissao" value="GERENTE_CORTESIAS"> Gerente de Cortesias</label><br>
+    <button onclick="cadastrarNovoUsuario()">Cadastrar</button>
+    <div id="resCadastroUsuario" style="margin-top:10px;"></div>
   </div>
 
   <!-- Cadastro de Evento -->
@@ -45,15 +76,6 @@
   </section>
 
   <!-- Consulta de Evento -->
-<!--	<section id="consultaEvento" style="display:none;">
-	  <h2>Consulta de Eventos</h2>
-	  <button onclick="listarEventos()">Listar Todos</button><br><br>
-	  <label for="eventosSelect">Selecione um evento:</label>
-	  <select id="eventosSelect"></select>
-
-	  <button onclick="buscarEventoSelecionado()">Buscar</button><br><br>
-	  <div id="resConsultaEvento" class="resultado"></div>
-	</section> -->
 <section id="consultaEvento" style="display:none;">
   <h2>Consultar Eventos</h2>
   <input id="filtroNomeEvento" placeholder="Filtrar por nome">
