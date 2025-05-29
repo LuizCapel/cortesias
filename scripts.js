@@ -6,6 +6,14 @@
   let token = null;
   let permissoes = [];
 
+function authedFetch(url, options = {}) {
+  if (!options.headers) {
+    options.headers = {};
+  }
+  options.headers["Authorization"] = "Bearer " + token;
+  return fetch(url, options);
+}
+
   function toggleSubmenu(id) {
     // Oculta todos os submenus
     document.querySelectorAll(".submenu").forEach(menu => {
@@ -131,7 +139,7 @@ function formatarDataIso(iso) {
 }
 
 async function carregarEventosSelect(id) {
-  const res = await fetch(`${API}/eventos`);
+  const res = await authedFetch(`${API}/eventos`);
   const select = document.getElementById(id);
   select.innerHTML = ""; // limpa opções anteriores
 
@@ -177,7 +185,7 @@ async function cadastrarEvento() {
 	    nome, data, local, responsavel, quantidadeCortesias
 	  };
 
-	  const res = await fetch(`${API}/eventos`, {
+	  const res = await authedFetch(`${API}/eventos`, {
 	    method: "POST",
 	    headers: { "Content-Type": "application/json" },
 	    body: JSON.stringify(dataEvento)
@@ -253,7 +261,7 @@ async function cadastrarPessoa() {
 
 	  const data = { nome, cpf, dataNascimento, cidade, telefone, email };
 
-	  const res = await fetch(`${API}/pessoas`, {
+	  const res = await authedFetch(`${API}/pessoas`, {
 	    method: "POST",
 	    headers: { "Content-Type": "application/json" },
 	    body: JSON.stringify(data)
@@ -294,7 +302,7 @@ function limparFormularioPessoa() {
       cpf: document.getElementById("cpfSolicitar").value
     };
 
-    const res = await fetch(`${API}/cortesias/solicitar`, {
+    const res = await authedFetch(`${API}/cortesias/solicitar`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
@@ -308,7 +316,7 @@ function limparFormularioPessoa() {
     const eventoId = document.getElementById("eventoIdValidar").value;
     const codigo = document.getElementById("codigoCortesia").value;
 
-    const res = await fetch(`${API}/cortesias/evento/${eventoId}/validar?codigo=${codigo}`, {
+    const res = await authedFetch(`${API}/cortesias/evento/${eventoId}/validar?codigo=${codigo}`, {
       method: "POST"
     });
 
@@ -328,7 +336,7 @@ async function buscarEventos() {
   if (local) params.append("local", local);
   if (responsavel) params.append("responsavel", responsavel);
 
-  const res = await fetch(`${API}/eventos/buscar?` + params.toString());
+  const res = await authedFetch(`${API}/eventos/buscar?` + params.toString());
   const eventos = await res.json();
   const div = document.getElementById("tabelaEventos");
 
@@ -391,7 +399,7 @@ async function salvarEdicaoEvento() {
 	    quantidadeCortesias: document.getElementById("editQtdCortesiasEvento").value
 	  };
 
-	  const res = await fetch(`${API}/eventos/${id}`, {
+	  const res = await authedFetch(`${API}/eventos/${id}`, {
 	    method: "PUT",
 	    headers: { "Content-Type": "application/json" },
 	    body: JSON.stringify(data)
@@ -410,7 +418,7 @@ async function salvarEdicaoEvento() {
 async function excluirEvento(id) {
   if (!confirm("Deseja excluir este evento?")) return;
 
-  const res = await fetch(`${API}/eventos/${id}`, { method: "DELETE" });
+  const res = await authedFetch(`${API}/eventos/${id}`, { method: "DELETE" });
 
   if (res.ok) {
     alert("Evento excluído.");
@@ -422,7 +430,7 @@ async function excluirEvento(id) {
 
 async function buscarEventoSelecionado() {
   const id = document.getElementById("eventosSelect").value;
-  const res = await fetch(`${API}/eventos/${id}`);
+  const res = await authedFetch(`${API}/eventos/${id}`);
   const container = document.getElementById("resConsultaEvento");
 
   if (!res.ok) {
@@ -445,7 +453,7 @@ async function buscarPessoas() {
   if (cidade) params.append("cidade", cidade);
   if (cpf) params.append("cpf", cpf);
 
-  const res = await fetch(`${API}/pessoas/buscar?` + params.toString());
+  const res = await authedFetch(`${API}/pessoas/buscar?` + params.toString());
   const pessoas = await res.json();
   const div = document.getElementById("tabelaPessoas");
 
@@ -602,7 +610,7 @@ async function salvarEdicaoPessoa() {
 
 	  const data = { nome, cpf, dataNascimento, cidade, telefone, email };
 
-	  const res = await fetch(`${API}/pessoas/${id}`, {
+	  const res = await authedFetch(`${API}/pessoas/${id}`, {
 	    method: "PUT",
 	    headers: { "Content-Type": "application/json" },
 	    body: JSON.stringify(data)
@@ -620,7 +628,7 @@ async function salvarEdicaoPessoa() {
 async function excluirPessoa(id) {
   if (!confirm("Tem certeza que deseja excluir esta pessoa?")) return;
 
-  const res = await fetch(`${API}/pessoas/${id}`, { method: "DELETE" });
+  const res = await authedFetch(`${API}/pessoas/${id}`, { method: "DELETE" });
 
   if (res.ok) {
     alert("Pessoa excluída com sucesso.");
@@ -634,7 +642,7 @@ async function marcarResgatada(codigo) {
   const confirmacao = confirm("Deseja marcar esta cortesia como resgatada?");
   if (!confirmacao) return;
 
-  const res = await fetch(`${API}/cortesias/resgatar?codigo=${codigo}`, {
+  const res = await authedFetch(`${API}/cortesias/resgatar?codigo=${codigo}`, {
     method: "POST"
   });
 
@@ -707,9 +715,7 @@ function carregarPermissoes() {
   .then(res => res.json())
   .then(user => {
     permissoes = user.permissoes;
-//    document.getElementById("loginSection").classList.add("hidden");
 document.getElementById("loginSection").style.display = "none";
-//    document.getElementById("menuPrincipal").classList.remove("hidden");
 document.getElementById("menuPrincipal").style.display = "block";
     mostrarBotoesMenu();
   });
@@ -744,6 +750,7 @@ function logout() {
   document.getElementById("loginEmail").value = "";
   document.getElementById("loginSenha").value = "";
   document.getElementById("loginMensagem").innerText = "";
+location.reload();
 }
 
 let cortesiasAtual = [];
@@ -753,7 +760,7 @@ async function listarCortesiasEvento() {
   const filtro = document.getElementById("filtroResgate").value;
   const url = `${API}/cortesias/evento/${eventoId}` + (filtro ? `?resgatada=${filtro}` : "");
 
-  const res = await fetch(url);
+  const res = await authedFetch(url);
   const container = document.getElementById("resConsultaCortesias");
 
   if (!res.ok) {
