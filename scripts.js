@@ -689,7 +689,10 @@ function realizarLogin() {
 	    body: JSON.stringify({ email, senha })
 	  })
 	  .then(res => {
-	    if (!res.ok) throw new Error("Login inválido");
+	    if (!res.ok) {
+	      btn.disabled = false;
+	      throw new Error("Login inválido");
+	    }
 	    return res.json();
 	  })
 	  .then(data => {
@@ -704,7 +707,7 @@ function realizarLogin() {
 	} finally {
 	  setTimeout(function() {
 	    btn.disabled = false;
-	  }, 5000);
+	  }, 10000);
 	}
 }
 
