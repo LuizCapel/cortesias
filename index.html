@@ -9,14 +9,6 @@
 <body>
   <p class="fs-1 fw-bold shadow-lg rounded mb-4 text-center">Sistema de Cortesias</p>
 
-<!--  <div id="loginSection" class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
-    <h2>Login</h2>
-    <label>Email: <input type="email" id="loginEmail" /></label><br />
-    <label>Senha: <input type="password" id="loginSenha" /></label><br />
-    <button class="btn btn-primary" id="btnLogin" onclick="realizarLogin()">Entrar</button>
-    <div id="loginMensagem" style="color:red; margin-top:10px;"></div>
-  </div> -->
-
   <div id="loginSection" class="container p-4 rounded shadow-lg bg-body-tertiary" style="max-width: 450px;">
     <h2 class="mb-4 text-center">Login</h2>
     <form>
@@ -34,37 +26,43 @@
   </div>
 
   <!-- Menus principais -->
-<div id="menuPrincipal" class="shadow-lg p-3 mb-5 bg-body-tertiary rounded" style="display: none;">
-  <h2>Bem-vindo!</h2>
-  <button class="btn btn-danger" onclick="logout()">Sair</button>
-  <h2></h2>
-  <nav>
-    <button class="btn btn-primary" id="btnGerenciarEventos" onclick="toggleSubmenu('menuEventos')" style="display: none; margin: 0px 0 5px 0px;">Gerenciar Eventos</button>
-    <button class="btn btn-primary" id="btnGerenciarPessoas" onclick="toggleSubmenu('menuPessoas')" style="display: none; margin: 0px 0 5px 0px;">Gerenciar Pessoas</button>
-    <button class="btn btn-primary" id="btnGerenciarCortesias" onclick="toggleSubmenu('menuCortesias')" style="display: none; margin: 0px 0 5px 0px;">Gerenciar Cortesias</button>
-    <button class="btn btn-danger" id="btnGerenciarUsuarios" onclick="toggleSubmenu('menuUsuarios')" style="display: none; margin: 0px 0 5px 0px;">Gerenciar Usuarios</button>
-  </nav>
-</div>
+  <div id="menuPrincipal" class="container shadow-lg p-4 mb-2 bg-body-tertiary rounded position-relative" style="max-width: 450px; display: none;">
+    <!-- Botão Sair no canto superior direito -->
+    <button class="btn btn-sm btn-danger position-absolute top-0 end-0 m-3" onclick="logout()">Sair</button>
+
+    <!-- Conteúdo Centralizado -->
+    <div class="d-flex flex-column align-items-center pt-4">
+      <h2 class="mb-4">Bem-vindo!</h2>
+
+      <!-- Botões Empilhados e Centralizados -->
+      <div class="d-flex flex-column align-items-stretch" style="width: 80%;">
+        <button class="btn btn-primary mb-2" id="btnGerenciarEventos" onclick="toggleSubmenu('menuEventos')" style="display: none;">Gerenciar Eventos</button>
+        <button class="btn btn-primary mb-2" id="btnGerenciarPessoas" onclick="toggleSubmenu('menuPessoas')" style="display: none;">Gerenciar Pessoas</button>
+        <button class="btn btn-primary mb-2" id="btnGerenciarCortesias" onclick="toggleSubmenu('menuCortesias')" style="display: none;">Gerenciar Cortesias</button>
+        <button class="btn btn-danger" id="btnGerenciarUsuarios" onclick="toggleSubmenu('menuUsuarios')" style="display: none;">Gerenciar Usuarios</button>
+      </div>
+    </div>
+  </div>
   
 
   <!-- Submenus -->
-  <div id="menuEventos" class="submenu" style="display: none;">
+  <div id="menuEventos" class="submenu container shadow-lg p-3 mb-2 bg-body-tertiary rounded" style="max-width: 550px; display: none;">
     <h3>Gerenciar Eventos</h3>
-    <button onclick="mostrar('cadastroEvento')">Cadastrar Evento</button>
-    <button onclick="mostrar('consultaEvento')">Consultar Evento</button>
+    <button class="btn btn-primary" onclick="mostrar('cadastroEvento')">Cadastrar Evento</button>
+    <button class="btn btn-primary" onclick="mostrar('consultaEvento')">Consultar Evento</button>
   </div>
 
   <div id="menuPessoas" class="submenu" style="display: none;">
     <h3>Gerenciar Pessoas</h3>
-    <button onclick="mostrar('cadastroPessoa')">Cadastrar Pessoa</button>
-    <button onclick="mostrar('listarPessoas')">Listar Pessoas</button>
+    <button class="btn btn-primary" onclick="mostrar('cadastroPessoa')">Cadastrar Pessoa</button>
+    <button class="btn btn-primary" onclick="mostrar('listarPessoas')">Listar Pessoas</button>
   </div>
 
   <div id="menuCortesias" class="submenu" style="display: none;">
     <h3>Gerenciar Cortesias</h3>
-    <button onclick="mostrar('solicitarCortesia')">Solicitar Cortesia</button>
-    <button onclick="mostrar('validarCortesia')">Validar Cortesia</button>
-    <button onclick="mostrar('consultaCortesiasEvento')">Consultar Cortesia Evento</button>
+    <button class="btn btn-primary" onclick="mostrar('solicitarCortesia')">Solicitar Cortesia</button>
+    <button class="btn btn-primary" onclick="mostrar('validarCortesia')">Validar Cortesia</button>
+    <button class="btn btn-primary" onclick="mostrar('consultaCortesiasEvento')">Consultar Cortesia Evento</button>
   </div>
 
   <div id="menuUsuarios" class="submenu" style="display: none;">
