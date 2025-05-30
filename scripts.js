@@ -81,35 +81,122 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+//function cadastrarNovoUsuario() {
+//  const email = document.getElementById("novoUsuarioEmail").value;
+//  const senha = document.getElementById("novoUsuarioSenha").value;
+//  const checkboxes = document.querySelectorAll(".chkPermissao:checked");
+//  const permissoesSelecionadas = Array.from(checkboxes).map(cb => cb.value);
+//  const resDiv = document.getElementById("resCadastroUsuario");
+//
+//  if (!email || !senha || permissoesSelecionadas.length === 0) {
+//    resDiv.innerText = "Preencha todos os campos.";
+//    return;
+//  }
+//
+//  fetch(API + "/auth/register", {
+//    method: "POST",
+//    headers: {
+//      "Content-Type": "application/json",
+//      Authorization: "Bearer " + token
+//    },
+//    body: JSON.stringify({ email, senha, permissoes: permissoesSelecionadas })
+//  })
+//  .then(res => res.ok ? "Usuário cadastrado com sucesso!" : res.text())
+//  .then(msg => {
+//    resDiv.innerText = msg;
+//    if (msg === "Usuário cadastrado com sucesso!") {
+//      document.getElementById("novoUsuarioEmail").value = "";
+//      document.getElementById("novoUsuarioSenha").value = "";
+//      document.querySelectorAll(".chkPermissao").forEach(cb => cb.checked = false);
+//    }
+//  });
+//}
+
 function cadastrarNovoUsuario() {
+  const nome = document.getElementById("novoUsuarioNome").value;
   const email = document.getElementById("novoUsuarioEmail").value;
   const senha = document.getElementById("novoUsuarioSenha").value;
-  const checkboxes = document.querySelectorAll(".chkPermissao:checked");
-  const permissoesSelecionadas = Array.from(checkboxes).map(cb => cb.value);
-  const resDiv = document.getElementById("resCadastroUsuario");
-
-  if (!email || !senha || permissoesSelecionadas.length === 0) {
-    resDiv.innerText = "Preencha todos os campos.";
-    return;
-  }
+  const permissoes = Array.from(document.querySelectorAll(".chkPermissao:checked")).map(cb => cb.value);
 
   fetch(API + "/auth/register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + token
+      "Authorization": "Bearer " + token
     },
-    body: JSON.stringify({ email, senha, permissoes: permissoesSelecionadas })
+    body: JSON.stringify({ nome, email, senha, permissoes })
   })
   .then(res => res.ok ? "Usuário cadastrado com sucesso!" : res.text())
   .then(msg => {
-    resDiv.innerText = msg;
-    if (msg === "Usuário cadastrado com sucesso!") {
-      document.getElementById("novoUsuarioEmail").value = "";
-      document.getElementById("novoUsuarioSenha").value = "";
-      document.querySelectorAll(".chkPermissao").forEach(cb => cb.checked = false);
-    }
+    document.getElementById("resCadastroUsuario").innerText = msg;
+    listarUsuarios();
   });
+}
+
+function listarUsuarios() {
+  const nome = document.getElementById("filtroNomeUsuario").value;
+  const email = document.getElementById("filtroEmailUsuario").value;
+  const url = new URL(API + "/usuario");
+  if (nome) url.searchParams.append("nome", nome);
+  if (email) url.searchParams.append("email", email);
+
+//            <td><input value="${u.permissoes.join(',')}" id="permissoes_${u.id}"></td>
+  fetch(url, { headers: { Authorization: "Bearer " + token } })
+    .then(res => res.json())
+    .then(data => {
+      const tabela = document.getElementById("tabelaUsuarios");
+      tabela.innerHTML = "<tr><th>ID</th><th>Nome</th><th>Email</th><th>Permissões</th><th>Ações</th></tr>";
+      data.forEach(u => {
+        tabela.innerHTML += `
+          <tr>
+            <td>${u.id}</td>
+            <td><input value="${u.nome}" id="nome_${u.id}"></td>
+            <td><input value="${u.email}" id="email_${u.id}"></td>
+<td>
+  ${["ADMIN", "GERENTE_EVENTOS", "GERENTE_PESSOAS", "GERENTE_CORTESIAS"].map(p =>
+    `<label><input type="checkbox" name="permissao_${u.id}" value="${p}" ${u.permissoes.includes(p) ? "checked" : ""}> ${p}</label><br>`
+  ).join("")}
+</td>
+	    <td><input type="password" placeholder="****" id="senha_${u.id}"></td>
+            <td>
+              <button onclick="editarUsuario(${u.id})">Salvar</button>
+              <button onclick="excluirUsuario(${u.id})">Excluir</button>
+            </td>
+          </tr>
+        `;
+      });
+    });
+}
+
+function editarUsuario(id) {
+  const nome = document.getElementById("nome_" + id).value;
+  const email = document.getElementById("email_" + id).value;
+//  const permissoes = document.getElementById("permissoes_" + id).value.split(",").map(p => p.trim());
+  const permissoes = Array.from(document.querySelectorAll(`input[name='permissao_${id}']:checked`))
+    .map(cb => cb.value);
+  const senha = document.getElementById("senha_" + id).value;
+
+  const body = { nome, email, permissoes };
+  if (senha) {
+    body.senha = senha;
+  }
+
+  fetch(API + "/usuario/" + id, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token
+    },
+    body: JSON.stringify(body)
+  }).then(() => listarUsuarios());
+}
+
+function excluirUsuario(id) {
+  if (!confirm("Confirma exclusão?")) return;
+  fetch(API + "/usuario/" + id, {
+    method: "DELETE",
+    headers: { Authorization: "Bearer " + token }
+  }).then(() => listarUsuarios());
 }
 
 function validarCPF(cpf) {
