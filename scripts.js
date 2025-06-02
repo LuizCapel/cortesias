@@ -1,6 +1,6 @@
 
-  const API = "https://exclusive-krista-luizcapel-78430027.koyeb.app/api";
-//  const API = "http://186.233.152.174:8080/api";
+//  const API = "https://exclusive-krista-luizcapel-78430027.koyeb.app/api";
+  const API = "http://186.233.152.174:8080/api";
 //  const API = "http://localhost:8080/api";
 
   let token = null;
@@ -237,8 +237,10 @@ async function carregarEventosSelect(id) {
 
   const eventos = await res.json();
   eventos.forEach(e => {
-    const dataFormatada = formatarDataIso(e.data);
-    const texto = `${e.nome} - ${e.local} - ${e.responsavel} - ${dataFormatada}`;
+//    const dataInicioFormatada = formatarDataIso(e.dataInicio);
+//    const dataFimFormatada = formatarDataIso(e.dataFim);
+//    const texto = `${e.nome} - ${e.local} - ${e.responsavel} - ${dataInicioFormatada}~${dataFimFormatada}`;
+    const texto = `${e.nome} - ${e.local} - ${e.responsavel} - ${e.dataInicio}~${e.dataFim}`;
     const option = document.createElement("option");
     option.value = e.id;
     option.textContent = texto;
@@ -252,13 +254,14 @@ async function cadastrarEvento() {
 	btn.disabled = true;
 	try {
 	  const nome = document.getElementById("nomeEvento").value.trim();
-	  const data = document.getElementById("dataEvento").value;
+	  const dataInicio = document.getElementById("dataInicioEvento").value;
+	  const dataFim = document.getElementById("dataFimEvento").value;
 	  const local = document.getElementById("localEvento").value.trim();
 	  const responsavel = document.getElementById("responsavelEvento").value.trim();
 	  const quantidadeCortesias = parseInt(document.getElementById("quantidadeCortesias").value);
 
 	  // Validações no frontend
-	  if (!nome || !data || !local || !responsavel || isNaN(quantidadeCortesias)) {
+	  if (!nome || !dataInicio || !dataFim || !local || !responsavel || isNaN(quantidadeCortesias)) {
 	    document.getElementById("resCadastroEvento").innerText = "Preencha todos os campos corretamente.";
 	    return;
 	  }
@@ -269,7 +272,7 @@ async function cadastrarEvento() {
 	  }
 
 	  const dataEvento = {
-	    nome, data, local, responsavel, quantidadeCortesias
+	    nome, dataInicio: new Date(dataInicio).toISOString(), dataFim: new Date(dataFim).toISOString(), local, responsavel, quantidadeCortesias
 	  };
 
 	  const res = await authedFetch(`${API}/eventos`, {
@@ -297,7 +300,8 @@ async function cadastrarEvento() {
 // Limpa os campos após sucesso
 function limparFormularioEvento() {
   document.getElementById("nomeEvento").value = "";
-  document.getElementById("dataEvento").value = "";
+  document.getElementById("dataInicioEvento").value = "";
+  document.getElementById("dataFimEvento").value = "";
   document.getElementById("localEvento").value = "";
   document.getElementById("responsavelEvento").value = "";
   document.getElementById("quantidadeCortesias").value = "";
@@ -411,6 +415,16 @@ function limparFormularioPessoa() {
     document.getElementById("resValidarCortesia").innerText = msg;
   }
 
+function formatarDataComHora(isoString) {
+  const date = new Date(isoString);
+  const dia = String(date.getDate()).padStart(2, "0");
+  const mes = String(date.getMonth() + 1).padStart(2, "0");
+  const ano = date.getFullYear();
+  const horas = String(date.getHours()).padStart(2, "0");
+  const minutos = String(date.getMinutes()).padStart(2, "0");
+  return `${dia}/${mes}/${ano} ${horas}:${minutos}`;
+}
+
 async function buscarEventos() {
   const nome = document.getElementById("filtroNomeEvento").value;
   const data = document.getElementById("filtroDataEvento").value;
@@ -436,17 +450,17 @@ async function buscarEventos() {
     <table border="1" cellpadding="5" cellspacing="0">
       <thead>
         <tr>
-          <th>Nome</th><th>Data</th><th>Local</th><th>Responsável</th><th>Cortesias</th><th>Ação</th>
+          <th>Nome</th><th>Data Inicio</th><th>Data Fim</th><th>Local</th><th>Responsável</th><th>Cortesias</th><th>Ação</th>
         </tr>
       </thead><tbody>
   `;
 
   eventos.forEach(e => {
-    const dataFormatada = formatarDataIso(e.data);
     tabela += `
       <tr>
         <td>${e.nome}</td>
-        <td>${dataFormatada}</td>
+        <td>${formatarDataComHora(e.dataInicio)}</td>
+        <td>${formatarDataComHora(e.dataFim)}</td>
         <td>${e.local}</td>
         <td>${e.responsavel}</td>
         <td>${e.quantidadeCortesias}</td>
@@ -462,11 +476,19 @@ async function buscarEventos() {
   div.innerHTML = tabela;
 }
 
+function formatarParaDatetimeLocal(isoString) {
+  const date = new Date(isoString);
+  const off = date.getTimezoneOffset();
+  const localDate = new Date(date.getTime() - off * 60000);
+  return localDate.toISOString().slice(0, 16); // yyyy-MM-ddTHH:mm
+}
+
 function editarEvento(e) {
   mostrar("editarEvento");
   document.getElementById("editEventoId").value = e.id;
   document.getElementById("editNomeEvento").value = e.nome;
-  document.getElementById("editDataEvento").value = e.data;
+  document.getElementById("editDataInicioEvento").value = formatarParaDatetimeLocal(e.dataInicio);
+  document.getElementById("editDataFimEvento").value = formatarParaDatetimeLocal(e.dataFim);
   document.getElementById("editLocalEvento").value = e.local;
   document.getElementById("editResponsavelEvento").value = e.responsavel;
   document.getElementById("editQtdCortesiasEvento").value = e.quantidadeCortesias;
@@ -475,16 +497,40 @@ function editarEvento(e) {
 async function salvarEdicaoEvento() {
 	const btn = document.querySelector("#btnEditarEvento");
 	btn.disabled = true;
+	document.getElementById("resEditarEvento").innerText = "";
 	try {
 	  const id = document.getElementById("editEventoId").value;
 
+//	  const data = {
+//	    nome: document.getElementById("editNomeEvento").value,
+//	    dataInicio: document.getElementById("editDataInicioEvento").value,
+//	    dataFim: document.getElementById("editDataFimEvento").value,
+//	    local: document.getElementById("editLocalEvento").value,
+//	    responsavel: document.getElementById("editResponsavelEvento").value,
+//	    quantidadeCortesias: document.getElementById("editQtdCortesiasEvento").value
+//	  };
+	  const nome = document.getElementById("editNomeEvento").value.trim();
+	  const dataInicio = document.getElementById("editDataInicioEvento").value;
+	  const dataFim = document.getElementById("editDataFimEvento").value;
+	  const local = document.getElementById("editLocalEvento").value.trim();
+	  const responsavel = document.getElementById("editResponsavelEvento").value.trim();
+	  const quantidadeCortesias = parseInt(document.getElementById("editQtdCortesiasEvento").value);
+
+	  // Validações no frontend
+	  if (!nome || !dataInicio || !dataFim || !local || !responsavel || isNaN(quantidadeCortesias)) {
+	    document.getElementById("resEditarEvento").innerText = "Preencha todos os campos corretamente.";
+	    return;
+	  }
+
+	  if (quantidadeCortesias < 0) {
+	    document.getElementById("resEditarEvento").innerText = "Quantidade de cortesias não pode ser negativa.";
+	    return;
+	  }
+
 	  const data = {
-	    nome: document.getElementById("editNomeEvento").value,
-	    data: document.getElementById("editDataEvento").value,
-	    local: document.getElementById("editLocalEvento").value,
-	    responsavel: document.getElementById("editResponsavelEvento").value,
-	    quantidadeCortesias: document.getElementById("editQtdCortesiasEvento").value
+	    nome, dataInicio: new Date(dataInicio).toISOString(), dataFim: new Date(dataFim).toISOString(), local, responsavel, quantidadeCortesias
 	  };
+
 
 	  const res = await authedFetch(`${API}/eventos/${id}`, {
 	    method: "PUT",
@@ -515,20 +561,20 @@ async function excluirEvento(id) {
   }
 }
 
-async function buscarEventoSelecionado() {
-  const id = document.getElementById("eventosSelect").value;
-  const res = await authedFetch(`${API}/eventos/${id}`);
-  const container = document.getElementById("resConsultaEvento");
-
-  if (!res.ok) {
-    container.innerText = "Evento não encontrado.";
-    return;
-  }
-
-  const evento = await res.json();
-  const dataFormatada = formatarDataIso(evento.data);
-  container.innerText = `ID ${evento.id} - ${evento.nome} (${dataFormatada}) em ${evento.local}`;
-}
+//async function buscarEventoSelecionado() {
+//  const id = document.getElementById("eventosSelect").value;
+//  const res = await authedFetch(`${API}/eventos/${id}`);
+//  const container = document.getElementById("resConsultaEvento");
+//
+//  if (!res.ok) {
+//    container.innerText = "Evento não encontrado.";
+//    return;
+//  }
+//
+//  const evento = await res.json();
+//  const dataFormatada = formatarDataIso(evento.data);
+//  container.innerText = `ID ${evento.id} - ${evento.nome} (${dataFormatada}) em ${evento.local}`;
+//}
 
 async function buscarPessoas() {
   const nome = document.getElementById("filtroNome").value;

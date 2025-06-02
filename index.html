@@ -72,7 +72,8 @@
   </div>
 
   <section id="cadastroUsuarios" style="display: none;">
-<!--    <h3>Cadastrar Novo Usuário</h3>
+    <h2>Cadastro de Usuário</h2>
+    <label>Nome: <input type="text" id="novoUsuarioNome"></label><br>
     <label>Email: <input type="email" id="novoUsuarioEmail"></label><br>
     <label>Senha: <input type="password" id="novoUsuarioSenha"></label><br>
     <label>Permissões:</label><br>
@@ -81,26 +82,10 @@
     <label><input type="checkbox" class="chkPermissao" value="GERENTE_PESSOAS"> Gerente de Pessoas</label><br>
     <label><input type="checkbox" class="chkPermissao" value="GERENTE_CORTESIAS"> Gerente de Cortesias</label><br>
     <button onclick="cadastrarNovoUsuario()">Cadastrar</button>
-    <div id="resCadastroUsuario" style="margin-top:10px;"></div> -->
-  <h2>Cadastro de Usuário</h2>
-  <label>Nome: <input type="text" id="novoUsuarioNome"></label><br>
-  <label>Email: <input type="email" id="novoUsuarioEmail"></label><br>
-  <label>Senha: <input type="password" id="novoUsuarioSenha"></label><br>
-  <label>Permissões:</label><br>
-  <label><input type="checkbox" class="chkPermissao" value="ADMIN"> ADMIN</label><br>
-  <label><input type="checkbox" class="chkPermissao" value="GERENTE_EVENTOS"> Gerente de Eventos</label><br>
-  <label><input type="checkbox" class="chkPermissao" value="GERENTE_PESSOAS"> Gerente de Pessoas</label><br>
-  <label><input type="checkbox" class="chkPermissao" value="GERENTE_CORTESIAS"> Gerente de Cortesias</label><br>
-  <button onclick="cadastrarNovoUsuario()">Cadastrar</button>
-  <div id="resCadastroUsuario" style="margin-top:10px;"></div>
+    <div id="resCadastroUsuario" style="margin-top:10px;"></div>
   </section>
 
 <section id="listarUsuarios" style="display: none;">
-<!--  <h2>Listar Usuários</h2>
-  <input id="filtroNomeUsuario" placeholder="Filtrar por nome">
-  <input id="filtroEmailUsuario" placeholder="Filtrar por email">
-  <button onclick="listarUsuarios()">Buscar</button>
-  <div id="tabelaUsuarios" class="resultado"></div> -->
   <h2>Listar Usuários</h2>
   <label>Nome: <input type="text" id="filtroNomeUsuario"></label>
   <label>Email: <input type="text" id="filtroEmailUsuario"></label>
@@ -112,7 +97,8 @@
   <section id="cadastroEvento" style="display: none;">
     <h2>Cadastro de Evento</h2>
     <label>Nome do Evento: <input id="nomeEvento" placeholder="Nome do Evento"></label>
-    <label>Data do Evento: <input id="dataEvento" type="date"></label>
+    <label>Data Inicio: <input id="dataInicioEvento" type="datetime-local"></label>
+    <label>Data Fim: <input id="dataFimEvento" type="datetime-local"></label>
     <label>Local do Evento: <input id="localEvento" placeholder="Local"></label>
     <label>Responsável do Evento: <input id="responsavelEvento" placeholder="Responsável"></label>
     <label>Quantidade Cortesias: <input id="quantidadeCortesias" type="number" placeholder="Quantidade de Cortesias"></label>
@@ -135,7 +121,8 @@
   <h2>Editar Evento</h2>
   <input id="editEventoId" type="hidden">
   <input id="editNomeEvento" placeholder="Nome">
-  <input id="editDataEvento" type="date">
+  <input id="editDataInicioEvento" type="datetime-local">
+  <input id="editDataFimEvento" type="datetime-local">
   <input id="editLocalEvento" placeholder="Local">
   <input id="editResponsavelEvento" placeholder="Responsável">
   <input id="editQtdCortesiasEvento" type="number" placeholder="Quantidade de cortesias">
