@@ -415,13 +415,23 @@ function limparFormularioPessoa() {
     document.getElementById("resValidarCortesia").innerText = msg;
   }
 
+//function formatarDataComHora(isoString) {
+//  const date = new Date(isoString);
+//  const dia = String(date.getDate()).padStart(2, "0");
+//  const mes = String(date.getMonth() + 1).padStart(2, "0");
+//  const ano = date.getFullYear();
+//  const horas = String(date.getHours()).padStart(2, "0");
+//  const minutos = String(date.getMinutes()).padStart(2, "0");
+//  return `${dia}/${mes}/${ano} ${horas}:${minutos}`;
+//}
+
 function formatarDataComHora(isoString) {
   const date = new Date(isoString);
-  const dia = String(date.getDate()).padStart(2, "0");
-  const mes = String(date.getMonth() + 1).padStart(2, "0");
-  const ano = date.getFullYear();
-  const horas = String(date.getHours()).padStart(2, "0");
-  const minutos = String(date.getMinutes()).padStart(2, "0");
+  const dia = String(date.getUTCDate()).padStart(2, "0");
+  const mes = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const ano = date.getUTCFullYear();
+  const horas = String(date.getUTCHours()).padStart(2, "0");
+  const minutos = String(date.getUTCMinutes()).padStart(2, "0");
   return `${dia}/${mes}/${ano} ${horas}:${minutos}`;
 }
 
@@ -477,10 +487,11 @@ async function buscarEventos() {
 }
 
 function formatarParaDatetimeLocal(isoString) {
-  const date = new Date(isoString);
-  const off = date.getTimezoneOffset();
-  const localDate = new Date(date.getTime() - off * 60000);
-  return localDate.toISOString().slice(0, 16); // yyyy-MM-ddTHH:mm
+  const [datePart, timePart] = isoString.split("T");
+  const [year, month, day] = datePart.split("-");
+  const [hour, minute] = timePart.split(":");
+
+  return `${year}-${month}-${day}T${hour}:${minute}`;
 }
 
 function editarEvento(e) {
