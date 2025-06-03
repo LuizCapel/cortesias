@@ -477,6 +477,7 @@ async function buscarEventos() {
         <td>
           <button onclick='editarEvento(${JSON.stringify(e)})'>Editar</button>
           <button onclick='excluirEvento(${e.id})'>Excluir</button>
+	  <button onclick="gerarLinkPublico(${e.id})">Gerar Link</button>
         </td>
       </tr>
     `;
@@ -549,6 +550,20 @@ async function salvarEdicaoEvento() {
 	} finally {
 	  btn.disabled = false; // reativa o botão
 	}
+}
+
+function gerarLinkPublico(id) {
+//  const eventoId = document.getElementById("eventoIdLink").value;
+//  if (!eventoId) {
+//    alert("Informe o ID do evento.");
+//    return;
+//  }
+  const url = `${window.location.origin}/solicitar-cortesia.html?evento=${id}`;
+  document.getElementById("linkGerado").innerHTML = `
+    <p>Link público:</p>
+    <input type="text" value="${url}" readonly style="width:100%">
+    <p><a href="${url}" target="_blank">Abrir em nova aba</a></p>
+  `;
 }
 
 async function excluirEvento(id) {
