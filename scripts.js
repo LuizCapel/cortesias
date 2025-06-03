@@ -512,14 +512,6 @@ async function salvarEdicaoEvento() {
 	try {
 	  const id = document.getElementById("editEventoId").value;
 
-//	  const data = {
-//	    nome: document.getElementById("editNomeEvento").value,
-//	    dataInicio: document.getElementById("editDataInicioEvento").value,
-//	    dataFim: document.getElementById("editDataFimEvento").value,
-//	    local: document.getElementById("editLocalEvento").value,
-//	    responsavel: document.getElementById("editResponsavelEvento").value,
-//	    quantidadeCortesias: document.getElementById("editQtdCortesiasEvento").value
-//	  };
 	  const nome = document.getElementById("editNomeEvento").value.trim();
 	  const dataInicio = document.getElementById("editDataInicioEvento").value;
 	  const dataFim = document.getElementById("editDataFimEvento").value;
@@ -539,7 +531,7 @@ async function salvarEdicaoEvento() {
 	  }
 
 	  const data = {
-	    nome, dataInicio: new Date(dataInicio).toISOString(), dataFim: new Date(dataFim).toISOString(), local, responsavel, quantidadeCortesias
+	    nome, dataInicio: dataInicio + ":00", dataFim: dataFim + ":00", local, responsavel, quantidadeCortesias
 	  };
 
 
