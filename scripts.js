@@ -40,6 +40,9 @@ function mostrar(id) {
   if (id === "solicitarCortesia") {
     carregarEventosSelect("eventoIdSolicitar");
   }
+  if (id == "consultaEvento") {
+    document.getElementById("linkGerado").style.display = "none";
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -558,7 +561,8 @@ function gerarLinkPublico(id) {
 //    alert("Informe o ID do evento.");
 //    return;
 //  }
-  const url = `${window.location.origin}/solicitar-cortesia.html?evento=${id}`;
+  const url = `${window.location.origin}/cortesias/solicitar-cortesia.html?evento=${id}`;
+  document.getElementById("linkGerado").style.display = "block";
   document.getElementById("linkGerado").innerHTML = `
     <p>Link público:</p>
     <input type="text" value="${url}" readonly style="width:100%">
