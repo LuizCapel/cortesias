@@ -418,15 +418,6 @@ function limparFormularioPessoa() {
     document.getElementById("resValidarCortesia").innerText = msg;
   }
 
-//function formatarDataComHora(isoString) {
-//  const date = new Date(isoString);
-//  const dia = String(date.getDate()).padStart(2, "0");
-//  const mes = String(date.getMonth() + 1).padStart(2, "0");
-//  const ano = date.getFullYear();
-//  const horas = String(date.getHours()).padStart(2, "0");
-//  const minutos = String(date.getMinutes()).padStart(2, "0");
-//  return `${dia}/${mes}/${ano} ${horas}:${minutos}`;
-//}
 
 function formatarDataComHora(isoString) {
   const date = new Date(isoString);
@@ -556,11 +547,6 @@ async function salvarEdicaoEvento() {
 }
 
 function gerarLinkPublico(id) {
-//  const eventoId = document.getElementById("eventoIdLink").value;
-//  if (!eventoId) {
-//    alert("Informe o ID do evento.");
-//    return;
-//  }
   const url = `${window.location.origin}/cortesias/solicitar-cortesia.html?evento=${id}`;
   document.getElementById("linkGerado").style.display = "block";
   document.getElementById("linkGerado").innerHTML = `
@@ -862,7 +848,7 @@ function realizarLogin() {
 	} finally {
 	  setTimeout(function() {
 	    btn.disabled = false;
-	  }, 10000);
+	  }, 30000);
 	}
 }
 
