@@ -53,7 +53,7 @@ function mostrarSecao(idToShow) {
     const secao = document.getElementById(idToShow);
     if (secao) {
         secao.classList.remove('d-none');
-        console.log(`Mostrando seção: ${idToShow}`); // Log para depuração
+//        console.log(`Mostrando seção: ${idToShow}`); // Log para depuração
     } else {
         console.error(`Seção com ID ${idToShow} não encontrada.`);
     }
@@ -81,13 +81,13 @@ function inicializarTooltips(containerElement) {
 
 // **NOVA FUNÇÃO:** Carrega permissões e dados do usuário logado
 async function carregarDadosUsuario() {
-    console.log("Tentando carregar dados do usuário (/usuario/me)");
+//    console.log("Tentando carregar dados do usuário (/usuario/me)");
     try {
         const res = await authedFetch(`${API}/usuario/me`);
         if (res.ok) {
             const userData = await res.json();
             permissoes = Array.isArray(userData.permissoes) ? userData.permissoes : [];
-            console.log("Dados do usuário carregados com sucesso. Permissões:", permissoes);
+//            console.log("Dados do usuário carregados com sucesso. Permissões:", permissoes);
             // Atualiza localStorage com as permissões frescas
             localStorage.setItem("userPermissoes", JSON.stringify(permissoes));
             return true; // Indica sucesso
@@ -95,7 +95,7 @@ async function carregarDadosUsuario() {
             console.error(`Erro ao buscar /usuario/me: ${res.status}`);
             // Se o token for inválido (401, 403), força logout
             if (res.status === 401 || res.status === 403) {
-                console.log("Token inválido ou expirado. Forçando logout.");
+//                console.log("Token inválido ou expirado. Forçando logout.");
                 logout();
             }
             return false; // Indica falha
@@ -128,7 +128,7 @@ async function realizarLogin() {
       const data = await res.json();
       token = data.token; // Define o token global
       localStorage.setItem("authToken", token); // Salva o token
-      console.log("Login API (/auth/login) OK. Token recebido.");
+//      console.log("Login API (/auth/login) OK. Token recebido.");
 
       // **CHAMADA ESSENCIAL:** Carrega as permissões após obter o token
       const permissoesCarregadas = await carregarDadosUsuario();
@@ -153,7 +153,7 @@ async function realizarLogin() {
 }
 
 function logout() {
-  console.log("Executando logout...");
+//  console.log("Executando logout...");
   token = null;
   permissoes = []; 
   localStorage.removeItem("authToken");
@@ -170,7 +170,7 @@ function logout() {
 function configurarMenuPrincipal() {
     // Usa diretamente a variável global 'permissoes', que deve ter sido carregada
     const safePermissoes = Array.isArray(permissoes) ? permissoes : [];
-    console.log("Configurando menu com permissões:", safePermissoes);
+//    console.log("Configurando menu com permissões:", safePermissoes);
 
     // Usa toggle com boolean diretamente
     document.getElementById('btnGerenciarEventos').classList.toggle('d-none', !(safePermissoes.includes('GERENTE_EVENTOS') || safePermissoes.includes('ADMIN')));
@@ -208,7 +208,7 @@ function mostrar(sectionIdToShow) {
     const secao = document.getElementById(sectionIdToShow);
     if (secao) {
         secao.classList.remove('d-none');
-        console.log(`Mostrando seção interna: ${sectionIdToShow}`); // Log para depuração
+//        console.log(`Mostrando seção interna: ${sectionIdToShow}`); // Log para depuração
     } else {
          console.error(`Seção interna com ID ${sectionIdToShow} não encontrada.`);
     }
@@ -1115,7 +1115,7 @@ function formatarTelefone(telefone) {
 // --- Inicialização da Página --- 
 
 async function inicializarApp() {
-    console.log("Inicializando aplicação...");
+//    console.log("Inicializando aplicação...");
     const storedToken = localStorage.getItem("authToken");
     let usuarioAutenticado = false;
 
