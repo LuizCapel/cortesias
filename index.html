@@ -4,13 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sistema de Cortesias - Bootstrap</title>
-  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <style>
     body {
-      background-color: #f8f9fa;
+/*      background-color: #f8f9fa; */
+      background-color: #000000;
       padding-top: 1rem;
       padding-bottom: 1rem;
     }
@@ -19,19 +18,16 @@
       margin: auto;
     }
     .section-container {
+      background: linear-gradient(to bottom, pink, lightblue);
       background-color: #ffffff;
       padding: 2rem;
       border-radius: 0.5rem;
       box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
       margin-bottom: 1.5rem;
     }
-    /* Garante que as seções controladas por JS comecem ocultas via classe d-none */
-    /* Regras de display: none; removidas daqui para evitar conflito */
-    /* Estilo para tabelas responsivas */
     .table-responsive {
         margin-top: 1rem;
     }
-    /* Ajuste para botões de ação em tabelas */
     td button {
         margin-right: 0.25rem;
         margin-bottom: 0.25rem;
@@ -41,9 +37,8 @@
 <body>
 
   <div class="main-container">
-    <h1 class="display-5 fw-bold text-center mb-4 p-3 bg-light rounded shadow-sm">Sistema de Cortesias</h1>
+    <h1 class="display-5 fw-bold text-center mb-4 p-3 bg-light rounded shadow-sm" style="background: linear-gradient(to bottom, pink, lightblue);">Sistema de Cortesias</h1>
 
-    <!-- Seção de Login -->
     <div id="loginSection" class="section-container mx-auto" style="max-width: 450px;">
       <h2 class="mb-4 text-center">Login</h2>
       <form>
@@ -56,11 +51,10 @@
           <input type="password" class="form-control" id="loginSenha" placeholder="Sua senha" required>
         </div>
         <button type="button" class="btn btn-primary w-100 mt-3" id="btnLogin" onclick="realizarLogin()">Entrar</button>
-        <div id="loginMensagem" class="alert alert-danger mt-3 text-center d-none"></div> <!-- Começa oculto -->
+        <div id="loginMensagem" class="alert alert-danger mt-3 text-center d-none"></div>
       </form>
     </div>
 
-    <!-- Menu Principal (inicialmente oculto) -->
     <div id="menuPrincipal" class="section-container mx-auto position-relative d-none" style="max-width: 500px;">
       <button class="btn btn-sm btn-danger position-absolute top-0 end-0 m-3" onclick="logout()">Sair</button>
       <div class="d-flex flex-column align-items-center pt-4">
@@ -74,7 +68,6 @@
       </div>
     </div>
 
-    <!-- Submenus (inicialmente ocultos) -->
     <div id="menuEventos" class="submenu section-container mx-auto d-none" style="max-width: 550px;">
       <h3 class="mb-3">Gerenciar Eventos</h3>
       <div class="d-grid gap-2 d-md-flex justify-content-md-start">
@@ -108,9 +101,6 @@
       </div>
     </div>
 
-    <!-- Seções de Conteúdo (inicialmente ocultas) -->
-
-    <!-- Cadastro de Usuário -->
     <section id="cadastroUsuarios" class="section-container d-none">
       <h2 class="mb-4">Cadastro de Usuário</h2>
       <div class="mb-3">
@@ -148,7 +138,6 @@
       <div id="resCadastroUsuario" class="alert mt-3 d-none"></div>
     </section>
 
-    <!-- Listar Usuários -->
     <section id="listarUsuarios" class="section-container d-none">
       <h2 class="mb-4">Listar Usuários</h2>
       <div class="row g-3 mb-3">
@@ -164,8 +153,8 @@
           <button class="btn btn-primary w-100" onclick="listarUsuarios()">Buscar</button>
         </div>
       </div>
-      <div class="table-responsive"> <!-- Added table-responsive wrapper -->
-        <table class="table table-striped table-hover"> <!-- Added table structure -->
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
           <thead>
             <tr>
               <th>Id</th>
@@ -176,8 +165,7 @@
               <th>Ações</th>
             </tr>
           </thead>
-          <tbody id="tabelaUsuariosBody"> <!-- Target tbody for the script -->
-            <!-- Event rows will be inserted here by buscarEventos() -->
+          <tbody id="tabelaUsuariosBody"> 
           </tbody>
         </table>
       </div>
@@ -185,7 +173,7 @@
 
     <section id="cadastroEvento" class="section-container d-none">
       <h2 class="mb-4">Cadastro de Evento</h2>
-      <form id="formCadastroEvento"> <!-- FORM TAG ADDED WITH ID -->
+      <form id="formCadastroEvento">
         <div class="mb-3">
           <label for="nomeEvento" class="form-label">Nome do Evento:</label>
           <input class="form-control" id="nomeEvento" placeholder="Nome do Evento">
@@ -212,12 +200,11 @@
           <label for="quantidadeCortesias" class="form-label">Quantidade Cortesias:</label>
           <input class="form-control" id="quantidadeCortesias" type="number" placeholder="Quantidade de Cortesias">
         </div>
-        <button id="btnCadastrarEvento" type="button" class="btn btn-primary" onclick="cadastrarEvento()">Cadastrar</button> <!-- TYPE CHANGED TO button TO PREVENT DEFAULT SUBMIT -->
+        <button id="btnCadastrarEvento" type="button" class="btn btn-primary" onclick="cadastrarEvento()">Cadastrar</button>
         <div class="resultado alert mt-3 d-none" id="resCadastroEvento"></div>
-      </form> <!-- FORM TAG CLOSED -->
+      </form> 
     </section>
 
-    <!-- Consulta de Evento -->
     <section id="consultaEvento" class="section-container d-none">
       <h2 class="mb-4">Consultar Eventos</h2>
       <div class="row g-3 mb-3">
@@ -239,8 +226,8 @@
         </div>
       </div>
       <button class="btn btn-primary mb-3" onclick="buscarEventos()">Buscar</button>
-      <div class="table-responsive"> <!-- Added table-responsive wrapper -->
-        <table class="table table-striped table-hover"> <!-- Added table structure -->
+      <div class="table-responsive"> 
+        <table class="table table-striped table-hover"> 
           <thead>
             <tr>
               <th>Nome</th>
@@ -252,15 +239,13 @@
               <th>Ações</th>
             </tr>
           </thead>
-          <tbody id="tabelaEventosBody"> <!-- Target tbody for the script -->
-            <!-- Event rows will be inserted here by buscarEventos() -->
+          <tbody id="tabelaEventosBody">
           </tbody>
         </table>
       </div>
       <div id="linkGerado" class="alert alert-info mt-3 d-none"></div>
     </section>
 
-    <!-- Editar Evento (Modal seria melhor, mas mantendo como section por enquanto) -->
     <section id="editarEvento" class="section-container d-none">
       <h2 class="mb-4">Editar Evento</h2>
       <input id="editEventoId" type="hidden">
@@ -291,14 +276,13 @@
         <input class="form-control" id="editQtdCortesiasEvento" type="number" placeholder="Quantidade de cortesias">
       </div>
       <button id="btnEditarEvento" class="btn btn-success" onclick="salvarEdicaoEvento()">Salvar Alterações</button>
-      <button type="button" class="btn btn-secondary" onclick="cancelarEdicaoEvento()">Cancelar</button> <!-- Botão Cancelar adicionado -->
+      <button type="button" class="btn btn-secondary" onclick="cancelarEdicaoEvento()">Cancelar</button> 
       <div class="resultado alert mt-3 d-none" id="resEditarEvento"></div>
     </section>
 
-    <!-- Cadastro de Pessoa -->
     <section id="cadastroPessoa" class="section-container d-none">
       <h2 class="mb-4">Cadastro de Pessoa</h2>
-      <form id="formCadastroPessoa"> <!-- FORM TAG ADDED WITH ID -->
+      <form id="formCadastroPessoa">
         <div class="mb-3">
           <label for="nomePessoa" class="form-label">Nome Completo:</label>
           <input class="form-control" id="nomePessoa" placeholder="Nome Completo">
@@ -328,11 +312,10 @@
           </div>
         </div>
         <button id="btnCadastrarPessoa" class="btn btn-primary" onclick="cadastrarPessoa()">Cadastrar</button>
-      </form> <!-- FORM TAG CLOSED -->
+      </form> 
       <div class="resultado alert mt-3 d-none" id="resCadastroPessoa"></div>
     </section>
 
-    <!-- Listar Pessoas -->
     <section id="listarPessoas" class="section-container d-none">
       <h2 class="mb-4">Listar Pessoas</h2>
       <div class="row g-3 mb-3">
@@ -350,9 +333,8 @@
         </div>
       </div>
       <button class="btn btn-primary mb-3" onclick="buscarPessoas()">Buscar</button>
-<!--      <div id="tabelaPessoas" class="resultado table-responsive"></div> -->
-      <div class="table-responsive"> <!-- Added table-responsive wrapper -->
-        <table class="table table-striped table-hover"> <!-- Added table structure -->
+      <div class="table-responsive"> 
+        <table class="table table-striped table-hover"> 
           <thead>
             <tr>
               <th>Nome</th>
@@ -364,8 +346,7 @@
               <th>Ações</th>
             </tr>
           </thead>
-          <tbody id="tabelaPessoasBody"> <!-- Target tbody for the script -->
-            <!-- Event rows will be inserted here by buscarEventos() -->
+          <tbody id="tabelaPessoasBody"> 
           </tbody>
         </table>
       </div>
@@ -404,11 +385,10 @@
         </div>
       </div>
       <button id="btnEditarPessoa" class="btn btn-success" onclick="salvarEdicaoPessoa()">Salvar Alterações</button>
-      <button type="button" class="btn btn-secondary" onclick="cancelarEdicaoPessoa()">Cancelar</button> <!-- Botão Cancelar adicionado -->
+      <button type="button" class="btn btn-secondary" onclick="cancelarEdicaoPessoa()">Cancelar</button> 
       <div class="resultado alert mt-3 d-none" id="resEditarPessoa"></div>
     </section>
 
-    <!-- Solicitar Cortesia -->
     <section id="solicitarCortesia" class="section-container d-none">
       <h2 class="mb-4">Solicitar Cortesia</h2>
       <div class="mb-3">
@@ -423,7 +403,6 @@
       <div class="resultado alert mt-3 d-none" id="resSolicitarCortesia"></div>
     </section>
 
-    <!-- Validar Cortesia -->
     <section id="validarCortesia" class="section-container d-none">
       <h2 class="mb-4">Validar Cortesia</h2>
       <div class="mb-3">
@@ -438,7 +417,6 @@
       <div class="resultado alert mt-3 d-none" id="resValidarCortesia"></div>
     </section>
 
-    <!-- Consultar Cortesias por Evento -->
     <section id="consultaCortesiasEvento" class="section-container d-none">
       <h2 class="mb-4">Consultar Cortesias de um Evento</h2>
       <div class="row g-3 mb-3 align-items-end">
@@ -458,9 +436,8 @@
           <button class="btn btn-primary w-100" onclick="listarCortesiasEvento()">Listar</button>
         </div>
       </div>
-<!--      <div id="resConsultaCortesias" class="resultado table-responsive"></div> -->
-      <div class="table-responsive"> <!-- Added table-responsive wrapper -->
-        <table class="table table-striped table-hover"> <!-- Added table structure -->
+      <div class="table-responsive"> 
+        <table class="table table-striped table-hover"> 
           <thead>
             <tr>
               <th>Código</th>
@@ -470,19 +447,16 @@
               <th>Ações</th>
             </tr>
           </thead>
-          <tbody id="tabelaCortesiasBody"> <!-- Target tbody for the script -->
-            <!-- Event rows will be inserted here by buscarEventos() -->
+          <tbody id="tabelaCortesiasBody"> 
           </tbody>
         </table>
         <button class="btn btn-success mb-3" onclick="exportarCSV()">Exportar CSV</button>
       </div>
     </section>
 
-  </div> <!-- Fim do main-container -->
+  </div> 
 
-  <!-- Bootstrap JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  <!-- Seu Script -->
   <script src="scripts.js"></script>
 </body>
 </html>
