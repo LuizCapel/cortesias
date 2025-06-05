@@ -2,210 +2,488 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Sistema de Cortesias</title>
-<!--  <link rel="stylesheet" href="style.css" /> -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Cortesias - Bootstrap</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+    .main-container {
+      max-width: 960px; /* Ajuste conforme necessário */
+      margin: auto;
+    }
+    .section-container {
+      background-color: #ffffff;
+      padding: 2rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+      margin-bottom: 1.5rem;
+    }
+    /* Garante que as seções controladas por JS comecem ocultas via classe d-none */
+    /* Regras de display: none; removidas daqui para evitar conflito */
+    /* Estilo para tabelas responsivas */
+    .table-responsive {
+        margin-top: 1rem;
+    }
+    /* Ajuste para botões de ação em tabelas */
+    td button {
+        margin-right: 0.25rem;
+        margin-bottom: 0.25rem;
+    }
+  </style>
 </head>
 <body>
-  <p class="fs-1 fw-bold shadow-lg rounded mb-4 text-center">Sistema de Cortesias</p>
 
-  <div id="loginSection" class="container p-4 rounded shadow-lg bg-body-tertiary" style="max-width: 450px;">
-    <h2 class="mb-4 text-center">Login</h2>
-    <form>
-      <div class="mb-3">
-        <label for="loginEmail" class="form-label">Email:</label>
-        <input type="email" class="form-control" id="loginEmail" placeholder="seu@email.com" required>
-      </div>
-      <div class="mb-3">
-        <label for="loginSenha" class="form-label">Senha:</label>
-        <input type="password" class="form-control" id="loginSenha" placeholder="Sua senha" required>
-      </div>
-      <button type="button" class="btn btn-primary w-100 mt-3" id="btnLogin" onclick="realizarLogin()">Entrar</button>
-      <div id="loginMensagem" class="text-danger mt-3 text-center"></div>
-    </form>
-  </div>
+  <div class="main-container">
+    <h1 class="display-5 fw-bold text-center mb-4 p-3 bg-light rounded shadow-sm">Sistema de Cortesias</h1>
 
-  <!-- Menus principais -->
-  <div id="menuPrincipal" class="container shadow-lg p-4 mb-2 bg-body-tertiary rounded position-relative" style="max-width: 450px; display: none;">
-    <!-- Botão Sair no canto superior direito -->
-    <button class="btn btn-sm btn-danger position-absolute top-0 end-0 m-3" onclick="logout()">Sair</button>
+    <!-- Seção de Login -->
+    <div id="loginSection" class="section-container mx-auto" style="max-width: 450px;">
+      <h2 class="mb-4 text-center">Login</h2>
+      <form>
+        <div class="mb-3">
+          <label for="loginEmail" class="form-label">Email:</label>
+          <input type="email" class="form-control" id="loginEmail" placeholder="seu@email.com" required>
+        </div>
+        <div class="mb-3">
+          <label for="loginSenha" class="form-label">Senha:</label>
+          <input type="password" class="form-control" id="loginSenha" placeholder="Sua senha" required>
+        </div>
+        <button type="button" class="btn btn-primary w-100 mt-3" id="btnLogin" onclick="realizarLogin()">Entrar</button>
+        <div id="loginMensagem" class="alert alert-danger mt-3 text-center d-none"></div> <!-- Começa oculto -->
+      </form>
+    </div>
 
-    <!-- Conteúdo Centralizado -->
-    <div class="d-flex flex-column align-items-center pt-4">
-      <h2 class="mb-4">Bem-vindo!</h2>
-
-      <!-- Botões Empilhados e Centralizados -->
-      <div class="d-flex flex-column align-items-stretch" style="width: 80%;">
-        <button class="btn btn-primary mb-2" id="btnGerenciarEventos" onclick="toggleSubmenu('menuEventos')" style="display: none;">Gerenciar Eventos</button>
-        <button class="btn btn-primary mb-2" id="btnGerenciarPessoas" onclick="toggleSubmenu('menuPessoas')" style="display: none;">Gerenciar Pessoas</button>
-        <button class="btn btn-primary mb-2" id="btnGerenciarCortesias" onclick="toggleSubmenu('menuCortesias')" style="display: none;">Gerenciar Cortesias</button>
-        <button class="btn btn-danger" id="btnGerenciarUsuarios" onclick="toggleSubmenu('menuUsuarios')" style="display: none;">Gerenciar Usuarios</button>
+    <!-- Menu Principal (inicialmente oculto) -->
+    <div id="menuPrincipal" class="section-container mx-auto position-relative d-none" style="max-width: 500px;">
+      <button class="btn btn-sm btn-danger position-absolute top-0 end-0 m-3" onclick="logout()">Sair</button>
+      <div class="d-flex flex-column align-items-center pt-4">
+        <h2 class="mb-4">Bem-vindo!</h2>
+        <div class="d-grid gap-2 w-75">
+          <button class="btn btn-primary d-none" id="btnGerenciarEventos" onclick="toggleSubmenu('menuEventos')">Gerenciar Eventos</button>
+          <button class="btn btn-primary d-none" id="btnGerenciarPessoas" onclick="toggleSubmenu('menuPessoas')">Gerenciar Pessoas</button>
+          <button class="btn btn-primary d-none" id="btnGerenciarCortesias" onclick="toggleSubmenu('menuCortesias')">Gerenciar Cortesias</button>
+          <button class="btn btn-danger d-none" id="btnGerenciarUsuarios" onclick="toggleSubmenu('menuUsuarios')">Gerenciar Usuários</button>
+        </div>
       </div>
     </div>
-  </div>
-  
 
-  <!-- Submenus -->
-  <div id="menuEventos" class="submenu container shadow-lg p-3 mb-2 bg-body-tertiary rounded" style="max-width: 550px; display: none;">
-    <h3>Gerenciar Eventos</h3>
-    <button class="btn btn-primary" onclick="mostrar('cadastroEvento')">Cadastrar Evento</button>
-    <button class="btn btn-primary" onclick="mostrar('consultaEvento')">Consultar Evento</button>
-  </div>
+    <!-- Submenus (inicialmente ocultos) -->
+    <div id="menuEventos" class="submenu section-container mx-auto d-none" style="max-width: 550px;">
+      <h3 class="mb-3">Gerenciar Eventos</h3>
+      <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+        <button class="btn btn-secondary me-md-2" type="button" onclick="mostrar('cadastroEvento')">Cadastrar Evento</button>
+        <button class="btn btn-secondary" type="button" onclick="mostrar('consultaEvento')">Consultar Evento</button>
+      </div>
+    </div>
 
-  <div id="menuPessoas" class="submenu" style="display: none;">
-    <h3>Gerenciar Pessoas</h3>
-    <button class="btn btn-primary" onclick="mostrar('cadastroPessoa')">Cadastrar Pessoa</button>
-    <button class="btn btn-primary" onclick="mostrar('listarPessoas')">Listar Pessoas</button>
-  </div>
+    <div id="menuPessoas" class="submenu section-container mx-auto d-none" style="max-width: 550px;">
+      <h3 class="mb-3">Gerenciar Pessoas</h3>
+       <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+        <button class="btn btn-secondary me-md-2" type="button" onclick="mostrar('cadastroPessoa')">Cadastrar Pessoa</button>
+        <button class="btn btn-secondary" type="button" onclick="mostrar('listarPessoas')">Listar Pessoas</button>
+      </div>
+    </div>
 
-  <div id="menuCortesias" class="submenu" style="display: none;">
-    <h3>Gerenciar Cortesias</h3>
-    <button class="btn btn-primary" onclick="mostrar('solicitarCortesia')">Solicitar Cortesia</button>
-    <button class="btn btn-primary" onclick="mostrar('validarCortesia')">Validar Cortesia</button>
-    <button class="btn btn-primary" onclick="mostrar('consultaCortesiasEvento')">Consultar Cortesia Evento</button>
-  </div>
+    <div id="menuCortesias" class="submenu section-container mx-auto d-none" style="max-width: 550px;">
+      <h3 class="mb-3">Gerenciar Cortesias</h3>
+      <div class="d-grid gap-2 d-md-flex justify-content-md-start flex-wrap">
+        <button class="btn btn-secondary me-md-2 mb-2" type="button" onclick="mostrar('solicitarCortesia')">Solicitar Cortesia</button>
+        <button class="btn btn-secondary me-md-2 mb-2" type="button" onclick="mostrar('validarCortesia')">Validar Cortesia</button>
+        <button class="btn btn-secondary mb-2" type="button" onclick="mostrar('consultaCortesiasEvento')">Consultar Cortesias Evento</button>
+      </div>
+    </div>
 
-  <div id="menuUsuarios" class="submenu" style="display: none;">
-    <h3>Gerenciar Usuários</h3>
-    <button class="btn btn-primary" onclick="mostrar('cadastroUsuarios')">Cadastrar Novo Usuário</button>
-    <button class="btn btn-primary" onclick="mostrar('listarUsuarios')">Listar Usuários</button>
-  </div>
+    <div id="menuUsuarios" class="submenu section-container mx-auto d-none" style="max-width: 550px;">
+      <h3 class="mb-3">Gerenciar Usuários</h3>
+      <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+        <button class="btn btn-secondary me-md-2" type="button" onclick="mostrar('cadastroUsuarios')">Cadastrar Novo Usuário</button>
+        <button class="btn btn-secondary" type="button" onclick="mostrar('listarUsuarios')">Listar Usuários</button>
+      </div>
+    </div>
 
-  <section id="cadastroUsuarios" style="display: none;">
-    <h2>Cadastro de Usuário</h2>
-    <label>Nome: <input type="text" id="novoUsuarioNome"></label><br>
-    <label>Email: <input type="email" id="novoUsuarioEmail"></label><br>
-    <label>Senha: <input type="password" id="novoUsuarioSenha"></label><br>
-    <label>Permissões:</label><br>
-    <label><input type="checkbox" class="chkPermissao" value="ADMIN"> ADMIN</label><br>
-    <label><input type="checkbox" class="chkPermissao" value="GERENTE_EVENTOS"> Gerente de Eventos</label><br>
-    <label><input type="checkbox" class="chkPermissao" value="GERENTE_PESSOAS"> Gerente de Pessoas</label><br>
-    <label><input type="checkbox" class="chkPermissao" value="GERENTE_CORTESIAS"> Gerente de Cortesias</label><br>
-    <button onclick="cadastrarNovoUsuario()">Cadastrar</button>
-    <div id="resCadastroUsuario" style="margin-top:10px;"></div>
-  </section>
+    <!-- Seções de Conteúdo (inicialmente ocultas) -->
 
-<section id="listarUsuarios" style="display: none;">
-  <h2>Listar Usuários</h2>
-  <label>Nome: <input type="text" id="filtroNomeUsuario"></label>
-  <label>Email: <input type="text" id="filtroEmailUsuario"></label>
-  <button onclick="listarUsuarios()">Buscar</button>
-  <table id="tabelaUsuarios"></table>
-</section>
+    <!-- Cadastro de Usuário -->
+    <section id="cadastroUsuarios" class="section-container d-none">
+      <h2 class="mb-4">Cadastro de Usuário</h2>
+      <div class="mb-3">
+        <label for="novoUsuarioNome" class="form-label">Nome:</label>
+        <input type="text" class="form-control" id="novoUsuarioNome">
+      </div>
+      <div class="mb-3">
+        <label for="novoUsuarioEmail" class="form-label">Email:</label>
+        <input type="email" class="form-control" id="novoUsuarioEmail">
+      </div>
+      <div class="mb-3">
+        <label for="novoUsuarioSenha" class="form-label">Senha:</label>
+        <input type="password" class="form-control" id="novoUsuarioSenha">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Permissões:</label>
+        <div class="form-check">
+          <input class="form-check-input chkPermissao" type="checkbox" value="ADMIN" id="permAdmin">
+          <label class="form-check-label" for="permAdmin">ADMIN</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input chkPermissao" type="checkbox" value="GERENTE_EVENTOS" id="permEventos">
+          <label class="form-check-label" for="permEventos">Gerente de Eventos</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input chkPermissao" type="checkbox" value="GERENTE_PESSOAS" id="permPessoas">
+          <label class="form-check-label" for="permPessoas">Gerente de Pessoas</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input chkPermissao" type="checkbox" value="GERENTE_CORTESIAS" id="permCortesias">
+          <label class="form-check-label" for="permCortesias">Gerente de Cortesias</label>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="cadastrarNovoUsuario()">Cadastrar</button>
+      <div id="resCadastroUsuario" class="alert mt-3 d-none"></div>
+    </section>
 
-  <!-- Cadastro de Evento -->
-  <section id="cadastroEvento" style="display: none;">
-    <h2>Cadastro de Evento</h2>
-    <label>Nome do Evento: <input id="nomeEvento" placeholder="Nome do Evento"></label>
-    <label>Data Inicio: <input id="dataInicioEvento" type="datetime-local"></label>
-    <label>Data Fim: <input id="dataFimEvento" type="datetime-local"></label>
-    <label>Local do Evento: <input id="localEvento" placeholder="Local"></label>
-    <label>Responsável do Evento: <input id="responsavelEvento" placeholder="Responsável"></label>
-    <label>Quantidade Cortesias: <input id="quantidadeCortesias" type="number" placeholder="Quantidade de Cortesias"></label>
-    <button id="btnCadastrarEvento" onclick="cadastrarEvento()">Cadastrar</button>
-    <div class="resultado" id="resCadastroEvento"></div>
-  </section>
+    <!-- Listar Usuários -->
+    <section id="listarUsuarios" class="section-container d-none">
+      <h2 class="mb-4">Listar Usuários</h2>
+      <div class="row g-3 mb-3">
+        <div class="col-md-5">
+          <label for="filtroNomeUsuario" class="form-label">Nome:</label>
+          <input type="text" class="form-control" id="filtroNomeUsuario">
+        </div>
+        <div class="col-md-5">
+          <label for="filtroEmailUsuario" class="form-label">Email:</label>
+          <input type="text" class="form-control" id="filtroEmailUsuario">
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+          <button class="btn btn-primary w-100" onclick="listarUsuarios()">Buscar</button>
+        </div>
+      </div>
+      <div class="table-responsive"> <!-- Added table-responsive wrapper -->
+        <table class="table table-striped table-hover"> <!-- Added table structure -->
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>Permissões</th>
+              <th>Senha</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaUsuariosBody"> <!-- Target tbody for the script -->
+            <!-- Event rows will be inserted here by buscarEventos() -->
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-  <!-- Consulta de Evento -->
-<section id="consultaEvento" style="display:none;">
-  <h2>Consultar Eventos</h2>
-  <input id="filtroNomeEvento" placeholder="Filtrar por nome">
-  <input id="filtroDataEvento" type="date" placeholder="Filtrar por data">
-  <input id="filtroLocalEvento" placeholder="Filtrar por local">
-  <input id="filtroResponsavelEvento" placeholder="Filtrar por responsável">
-  <button onclick="buscarEventos()">Buscar</button>
-  <div id="tabelaEventos" class="resultado"></div>
-  <div id="linkGerado"></div>
-</section>
+    <section id="cadastroEvento" class="section-container d-none">
+      <h2 class="mb-4">Cadastro de Evento</h2>
+      <form id="formCadastroEvento"> <!-- FORM TAG ADDED WITH ID -->
+        <div class="mb-3">
+          <label for="nomeEvento" class="form-label">Nome do Evento:</label>
+          <input class="form-control" id="nomeEvento" placeholder="Nome do Evento">
+        </div>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="dataInicioEvento" class="form-label">Data Início:</label>
+            <input class="form-control" id="dataInicioEvento" type="datetime-local">
+          </div>
+          <div class="col-md-6">
+            <label for="dataFimEvento" class="form-label">Data Fim:</label>
+            <input class="form-control" id="dataFimEvento" type="datetime-local">
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="localEvento" class="form-label">Local do Evento:</label>
+          <input class="form-control" id="localEvento" placeholder="Local">
+        </div>
+        <div class="mb-3">
+          <label for="responsavelEvento" class="form-label">Responsável do Evento:</label>
+          <input class="form-control" id="responsavelEvento" placeholder="Responsável">
+        </div>
+        <div class="mb-3">
+          <label for="quantidadeCortesias" class="form-label">Quantidade Cortesias:</label>
+          <input class="form-control" id="quantidadeCortesias" type="number" placeholder="Quantidade de Cortesias">
+        </div>
+        <button id="btnCadastrarEvento" type="button" class="btn btn-primary" onclick="cadastrarEvento()">Cadastrar</button> <!-- TYPE CHANGED TO button TO PREVENT DEFAULT SUBMIT -->
+        <div class="resultado alert mt-3 d-none" id="resCadastroEvento"></div>
+      </form> <!-- FORM TAG CLOSED -->
+    </section>
 
-<section id="editarEvento" style="display:none;">
-  <h2>Editar Evento</h2>
-  <input id="editEventoId" type="hidden">
-  <input id="editNomeEvento" placeholder="Nome">
-  <input id="editDataInicioEvento" type="datetime-local">
-  <input id="editDataFimEvento" type="datetime-local">
-  <input id="editLocalEvento" placeholder="Local">
-  <input id="editResponsavelEvento" placeholder="Responsável">
-  <input id="editQtdCortesiasEvento" type="number" placeholder="Quantidade de cortesias">
-  <button id="btnEditarEvento" onclick="salvarEdicaoEvento()">Salvar Alterações</button>
-  <div class="resultado" id="resEditarEvento"></div>
-</section>
+    <!-- Consulta de Evento -->
+    <section id="consultaEvento" class="section-container d-none">
+      <h2 class="mb-4">Consultar Eventos</h2>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6 col-lg-3">
+          <label for="filtroNomeEvento" class="form-label">Nome:</label>
+          <input class="form-control" id="filtroNomeEvento" placeholder="Filtrar por nome">
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <label for="filtroDataEvento" class="form-label">Data:</label>
+          <input class="form-control" id="filtroDataEvento" type="date">
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <label for="filtroLocalEvento" class="form-label">Local:</label>
+          <input class="form-control" id="filtroLocalEvento" placeholder="Filtrar por local">
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <label for="filtroResponsavelEvento" class="form-label">Responsável:</label>
+          <input class="form-control" id="filtroResponsavelEvento" placeholder="Filtrar por responsável">
+        </div>
+      </div>
+      <button class="btn btn-primary mb-3" onclick="buscarEventos()">Buscar</button>
+      <div class="table-responsive"> <!-- Added table-responsive wrapper -->
+        <table class="table table-striped table-hover"> <!-- Added table structure -->
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Data Início</th>
+              <th>Data Fim</th>
+              <th>Local</th>
+              <th>Responsável</th>
+              <th>Cortesias</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaEventosBody"> <!-- Target tbody for the script -->
+            <!-- Event rows will be inserted here by buscarEventos() -->
+          </tbody>
+        </table>
+      </div>
+      <div id="linkGerado" class="alert alert-info mt-3 d-none"></div>
+    </section>
 
-  <!-- Cadastro de Pessoa -->
-  <section id="cadastroPessoa" style="display: none;">
-    <h2>Cadastro de Pessoa</h2>
-    <input id="nomePessoa" placeholder="Nome Completo">
-    <input id="cpfPessoa" placeholder="CPF (somente números)">
-    <input id="dataNascimentoPessoa" type="date">
-    <input id="cidadePessoa" placeholder="Cidade">
-    <input id="telefonePessoa" placeholder="Telefone">
-    <input id="emailPessoa" placeholder="Email">
-    <button id="btnCadastrarPessoa" onclick="cadastrarPessoa()">Cadastrar</button>
-    <div class="resultado" id="resCadastroPessoa"></div>
-  </section>
+    <!-- Editar Evento (Modal seria melhor, mas mantendo como section por enquanto) -->
+    <section id="editarEvento" class="section-container d-none">
+      <h2 class="mb-4">Editar Evento</h2>
+      <input id="editEventoId" type="hidden">
+      <div class="mb-3">
+        <label for="editNomeEvento" class="form-label">Nome:</label>
+        <input class="form-control" id="editNomeEvento" placeholder="Nome">
+      </div>
+       <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label for="editDataInicioEvento" class="form-label">Data Início:</label>
+          <input class="form-control" id="editDataInicioEvento" type="datetime-local">
+        </div>
+        <div class="col-md-6">
+          <label for="editDataFimEvento" class="form-label">Data Fim:</label>
+          <input class="form-control" id="editDataFimEvento" type="datetime-local">
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="editLocalEvento" class="form-label">Local:</label>
+        <input class="form-control" id="editLocalEvento" placeholder="Local">
+      </div>
+      <div class="mb-3">
+        <label for="editResponsavelEvento" class="form-label">Responsável:</label>
+        <input class="form-control" id="editResponsavelEvento" placeholder="Responsável">
+      </div>
+      <div class="mb-3">
+        <label for="editQtdCortesiasEvento" class="form-label">Quantidade Cortesias:</label>
+        <input class="form-control" id="editQtdCortesiasEvento" type="number" placeholder="Quantidade de cortesias">
+      </div>
+      <button id="btnEditarEvento" class="btn btn-success" onclick="salvarEdicaoEvento()">Salvar Alterações</button>
+      <button type="button" class="btn btn-secondary" onclick="cancelarEdicaoEvento()">Cancelar</button> <!-- Botão Cancelar adicionado -->
+      <div class="resultado alert mt-3 d-none" id="resEditarEvento"></div>
+    </section>
 
-	<section id="listarPessoas" style="display:none;">
-	  <h2>Listar Pessoas</h2>
-	  <input id="filtroNome" placeholder="Filtrar por nome">
-	  <input id="filtroCidade" placeholder="Filtrar por cidade">
-	  <input id="filtroCPF" placeholder="Filtrar por CPF">
-	  <button onclick="buscarPessoas()">Buscar</button>
-	  <div id="tabelaPessoas" class="resultado"></div>
-	</section>
+    <!-- Cadastro de Pessoa -->
+    <section id="cadastroPessoa" class="section-container d-none">
+      <h2 class="mb-4">Cadastro de Pessoa</h2>
+      <form id="formCadastroPessoa"> <!-- FORM TAG ADDED WITH ID -->
+        <div class="mb-3">
+          <label for="nomePessoa" class="form-label">Nome Completo:</label>
+          <input class="form-control" id="nomePessoa" placeholder="Nome Completo">
+        </div>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="cpfPessoa" class="form-label">CPF:</label>
+            <input class="form-control" id="cpfPessoa" placeholder="___.___.___-__">
+          </div>
+          <div class="col-md-6">
+            <label for="dataNascimentoPessoa" class="form-label">Data de Nascimento:</label>
+            <input class="form-control" id="dataNascimentoPessoa" type="date">
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="cidadePessoa" class="form-label">Cidade:</label>
+          <input class="form-control" id="cidadePessoa" placeholder="Cidade">
+        </div>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="telefonePessoa" class="form-label">Telefone:</label>
+            <input class="form-control" id="telefonePessoa" placeholder="(XX)XXXXX-XXXX">
+          </div>
+          <div class="col-md-6">
+            <label for="emailPessoa" class="form-label">Email:</label>
+            <input type="email" class="form-control" id="emailPessoa" placeholder="Email">
+          </div>
+        </div>
+        <button id="btnCadastrarPessoa" class="btn btn-primary" onclick="cadastrarPessoa()">Cadastrar</button>
+      </form> <!-- FORM TAG CLOSED -->
+      <div class="resultado alert mt-3 d-none" id="resCadastroPessoa"></div>
+    </section>
 
-	<section id="editarPessoa" style="display:none;">
-	  <h2>Editar Pessoa</h2>
-	  <input id="editId" type="hidden">
-	  <input id="editNome" placeholder="Nome">
-	  <input id="editCpf" placeholder="CPF">
-	  <input id="editDataNascimento" type="date">
-	  <input id="editCidade" placeholder="Cidade">
-	  <input id="editTelefone" placeholder="Telefone">
-	  <input id="editEmail" placeholder="Email">
-	  <button id="btnEditarPessoa" onclick="salvarEdicaoPessoa()">Salvar Alterações</button>
-	  <div class="resultado" id="resEditarPessoa"></div>
-	</section>
+    <!-- Listar Pessoas -->
+    <section id="listarPessoas" class="section-container d-none">
+      <h2 class="mb-4">Listar Pessoas</h2>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label for="filtroNome" class="form-label">Nome:</label>
+          <input class="form-control" id="filtroNome" placeholder="Filtrar por nome">
+        </div>
+        <div class="col-md-4">
+          <label for="filtroCidade" class="form-label">Cidade:</label>
+          <input class="form-control" id="filtroCidade" placeholder="Filtrar por cidade">
+        </div>
+        <div class="col-md-4">
+          <label for="filtroCPF" class="form-label">CPF:</label>
+          <input class="form-control" id="filtroCPF" placeholder="Filtrar por CPF">
+        </div>
+      </div>
+      <button class="btn btn-primary mb-3" onclick="buscarPessoas()">Buscar</button>
+<!--      <div id="tabelaPessoas" class="resultado table-responsive"></div> -->
+      <div class="table-responsive"> <!-- Added table-responsive wrapper -->
+        <table class="table table-striped table-hover"> <!-- Added table structure -->
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>CPF</th>
+              <th>Data Nascimento</th>
+              <th>Cidade</th>
+              <th>Telefone</th>
+              <th>Email</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaPessoasBody"> <!-- Target tbody for the script -->
+            <!-- Event rows will be inserted here by buscarEventos() -->
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-  <!-- Solicitar Cortesia -->
-  <section id="solicitarCortesia" style="display: none;">
-    <h2>Solicitar Cortesia</h2>
-<!--    <input id="eventoIdSolicitar" type="number" placeholder="ID do Evento"> -->
-    <select id="eventoIdSolicitar"></select>
-    <input id="cpfSolicitar" placeholder="CPF da Pessoa">
-    <button onclick="solicitarCortesia()">Solicitar</button>
-    <div class="resultado" id="resSolicitarCortesia"></div>
-  </section>
+    <!-- Editar Pessoa (Modal seria melhor) -->
+    <section id="editarPessoa" class="section-container d-none">
+      <h2 class="mb-4">Editar Pessoa</h2>
+      <input id="editId" type="hidden">
+      <div class="mb-3">
+        <label for="editNome" class="form-label">Nome:</label>
+        <input class="form-control" id="editNome" placeholder="Nome">
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label for="editCpf" class="form-label">CPF:</label>
+          <input class="form-control" id="editCpf" placeholder="CPF">
+        </div>
+        <div class="col-md-6">
+          <label for="editDataNascimento" class="form-label">Data Nascimento:</label>
+          <input class="form-control" id="editDataNascimento" type="date">
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="editCidade" class="form-label">Cidade:</label>
+        <input class="form-control" id="editCidade" placeholder="Cidade">
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label for="editTelefone" class="form-label">Telefone:</label>
+          <input class="form-control" id="editTelefone" placeholder="Telefone">
+        </div>
+        <div class="col-md-6">
+          <label for="editEmail" class="form-label">Email:</label>
+          <input type="email" class="form-control" id="editEmail" placeholder="Email">
+        </div>
+      </div>
+      <button id="btnEditarPessoa" class="btn btn-success" onclick="salvarEdicaoPessoa()">Salvar Alterações</button>
+      <button type="button" class="btn btn-secondary" onclick="cancelarEdicaoPessoa()">Cancelar</button> <!-- Botão Cancelar adicionado -->
+      <div class="resultado alert mt-3 d-none" id="resEditarPessoa"></div>
+    </section>
 
-  <!-- Validar Cortesia -->
-  <section id="validarCortesia" style="display: none;">
-    <h2>Validar Cortesia</h2>
-    <input id="eventoIdValidar" type="number" placeholder="ID do Evento">
-    <input id="codigoCortesia" placeholder="Código da Cortesia">
-    <button onclick="validarCortesia()">Validar</button>
-    <div class="resultado" id="resValidarCortesia"></div>
-  </section>
+    <!-- Solicitar Cortesia -->
+    <section id="solicitarCortesia" class="section-container d-none">
+      <h2 class="mb-4">Solicitar Cortesia</h2>
+      <div class="mb-3">
+        <label for="eventoIdSolicitar" class="form-label">Selecione o Evento:</label>
+        <select class="form-select" id="eventoIdSolicitar"></select>
+      </div>
+      <div class="mb-3">
+        <label for="cpfSolicitar" class="form-label">CPF da Pessoa:</label>
+        <input class="form-control" id="cpfSolicitar" placeholder="CPF (somente números)">
+      </div>
+      <button class="btn btn-primary" onclick="solicitarCortesia()">Solicitar</button>
+      <div class="resultado alert mt-3 d-none" id="resSolicitarCortesia"></div>
+    </section>
 
-  <!-- Listar Cortesia -->
-  <section id="consultaCortesiasEvento" style="display:none;">
-    <h2>Consultar Cortesias de um Evento</h2>
-<!--    Evento ID: <input id="eventoIdConsultaCortesias" type="number"> -->
-	<label for="eventosSelectCortesia">Selecione um evento:</label>
-	  <select id="eventosSelectCortesia"></select>
-    <label>
-      Filtro:
-      <select id="filtroResgate">
-        <option value="">Todas</option>
-        <option value="true">Resgatadas</option>
-        <option value="false">Não resgatadas</option>
-      </select>
-    </label>
-    <button onclick="listarCortesiasEvento()">Listar Cortesias</button>
-    <button onclick="exportarCSV()">Exportar CSV</button>
-    <div id="resConsultaCortesias" class="resultado"></div>
-  </section>
+    <!-- Validar Cortesia -->
+    <section id="validarCortesia" class="section-container d-none">
+      <h2 class="mb-4">Validar Cortesia</h2>
+      <div class="mb-3">
+        <label for="eventoIdValidar" class="form-label">ID do Evento:</label>
+        <input class="form-control" id="eventoIdValidar" type="number" placeholder="ID do Evento">
+      </div>
+      <div class="mb-3">
+        <label for="codigoCortesia" class="form-label">Código da Cortesia:</label>
+        <input class="form-control" id="codigoCortesia" placeholder="Código da Cortesia">
+      </div>
+      <button class="btn btn-primary" onclick="validarCortesia()">Validar</button>
+      <div class="resultado alert mt-3 d-none" id="resValidarCortesia"></div>
+    </section>
 
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.min.js" integrity="sha384-RuyvpeZCxMJCqVUGFI0Do1mQrods/hhxYlcVfGPOfQtPJh0JCw12tUAZ/Mv10S7D" crossorigin="anonymous"></script>
+    <!-- Consultar Cortesias por Evento -->
+    <section id="consultaCortesiasEvento" class="section-container d-none">
+      <h2 class="mb-4">Consultar Cortesias de um Evento</h2>
+      <div class="row g-3 mb-3 align-items-end">
+        <div class="col-md-6">
+          <label for="eventosSelectCortesia" class="form-label">Selecione um evento:</label>
+          <select class="form-select" id="eventosSelectCortesia"></select>
+        </div>
+        <div class="col-md-4">
+          <label for="filtroResgate" class="form-label">Filtrar por Status:</label>
+          <select class="form-select" id="filtroResgate">
+            <option value="">Todas</option>
+            <option value="true">Resgatadas</option>
+            <option value="false">Não resgatadas</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-primary w-100" onclick="listarCortesiasEvento()">Listar</button>
+        </div>
+      </div>
+<!--      <div id="resConsultaCortesias" class="resultado table-responsive"></div> -->
+      <div class="table-responsive"> <!-- Added table-responsive wrapper -->
+        <table class="table table-striped table-hover"> <!-- Added table structure -->
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Pessoa</th>
+              <th>Status</th>
+              <th>Data Solicitação</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaCortesiasBody"> <!-- Target tbody for the script -->
+            <!-- Event rows will be inserted here by buscarEventos() -->
+          </tbody>
+        </table>
+        <button class="btn btn-success mb-3" onclick="exportarCSV()">Exportar CSV</button>
+      </div>
+    </section>
+
+  </div> <!-- Fim do main-container -->
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <!-- Seu Script -->
   <script src="scripts.js"></script>
 </body>
 </html>
+
