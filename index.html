@@ -18,7 +18,7 @@
       margin: auto;
     }
     .section-container {
-      background: linear-gradient(to bottom, pink, lightblue);
+      background-image: linear-gradient(to bottom, #ff8ce1, #f8a6ef, #f3bef9, #f1d3fe, #f3e7ff, #ece7fd, #e7e7f9, #e3e7f5, #c8d7ee, #a7c9e6, #80bcda, #51afcb);
       background-color: #ffffff;
       padding: 2rem;
       border-radius: 0.5rem;
@@ -37,10 +37,10 @@
 <body>
 
   <div class="main-container">
-    <h1 class="display-5 fw-bold text-center mb-4 p-3 bg-light rounded shadow-sm" style="background: linear-gradient(to bottom, pink, lightblue);">Sistema de Cortesias</h1>
+    <h1 class="display-5 fw-bold text-center mb-4 p-3 bg-light rounded shadow-sm" style="background-image: linear-gradient(to bottom, #ff8ce1, #f8a6ef, #f3bef9, #f1d3fe, #f3e7ff, #ece7fd, #e7e7f9, #e3e7f5, #c8d7ee, #a7c9e6, #80bcda, #51afcb);">Sistema de Cortesias</h1>
 
     <div id="loginSection" class="section-container mx-auto" style="max-width: 450px;">
-      <h2 class="mb-4 text-center">Login</h2>
+      <h2 class="mb-4 fw-bold text-center">Login</h2>
       <form>
         <div class="mb-3">
           <label for="loginEmail" class="form-label">Email:</label>
@@ -58,7 +58,7 @@
     <div id="menuPrincipal" class="section-container mx-auto position-relative d-none" style="max-width: 500px;">
       <button class="btn btn-sm btn-danger position-absolute top-0 end-0 m-3" onclick="logout()">Sair</button>
       <div class="d-flex flex-column align-items-center pt-4">
-        <h2 class="mb-4">Bem-vindo!</h2>
+        <h2 class="mb-4 fw-bold">Bem-vindo!</h2>
         <div class="d-grid gap-2 w-75">
           <button class="btn btn-primary d-none" id="btnGerenciarEventos" onclick="toggleSubmenu('menuEventos')">Gerenciar Eventos</button>
           <button class="btn btn-primary d-none" id="btnGerenciarPessoas" onclick="toggleSubmenu('menuPessoas')">Gerenciar Pessoas</button>
@@ -69,7 +69,7 @@
     </div>
 
     <div id="menuEventos" class="submenu section-container mx-auto d-none" style="max-width: 550px;">
-      <h3 class="mb-3">Gerenciar Eventos</h3>
+      <h3 class="mb-3 fw-bold">Gerenciar Eventos</h3>
       <div class="d-grid gap-2 d-md-flex justify-content-md-start">
         <button class="btn btn-secondary me-md-2" type="button" onclick="mostrar('cadastroEvento')">Cadastrar Evento</button>
         <button class="btn btn-secondary" type="button" onclick="mostrar('consultaEvento')">Consultar Evento</button>
@@ -77,7 +77,7 @@
     </div>
 
     <div id="menuPessoas" class="submenu section-container mx-auto d-none" style="max-width: 550px;">
-      <h3 class="mb-3">Gerenciar Pessoas</h3>
+      <h3 class="mb-3 fw-bold">Gerenciar Pessoas</h3>
        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
         <button class="btn btn-secondary me-md-2" type="button" onclick="mostrar('cadastroPessoa')">Cadastrar Pessoa</button>
         <button class="btn btn-secondary" type="button" onclick="mostrar('listarPessoas')">Listar Pessoas</button>
@@ -85,7 +85,7 @@
     </div>
 
     <div id="menuCortesias" class="submenu section-container mx-auto d-none" style="max-width: 550px;">
-      <h3 class="mb-3">Gerenciar Cortesias</h3>
+      <h3 class="mb-3 fw-bold">Gerenciar Cortesias</h3>
       <div class="d-grid gap-2 d-md-flex justify-content-md-start flex-wrap">
         <button class="btn btn-secondary me-md-2 mb-2" type="button" onclick="mostrar('solicitarCortesia')">Solicitar Cortesia</button>
         <button class="btn btn-secondary me-md-2 mb-2" type="button" onclick="mostrar('validarCortesia')">Validar Cortesia</button>
@@ -94,7 +94,7 @@
     </div>
 
     <div id="menuUsuarios" class="submenu section-container mx-auto d-none" style="max-width: 550px;">
-      <h3 class="mb-3">Gerenciar Usuários</h3>
+      <h3 class="mb-3 fw-bold">Gerenciar Usuários</h3>
       <div class="d-grid gap-2 d-md-flex justify-content-md-start">
         <button class="btn btn-secondary me-md-2" type="button" onclick="mostrar('cadastroUsuarios')">Cadastrar Novo Usuário</button>
         <button class="btn btn-secondary" type="button" onclick="mostrar('listarUsuarios')">Listar Usuários</button>
@@ -102,7 +102,7 @@
     </div>
 
     <section id="cadastroUsuarios" class="section-container d-none">
-      <h2 class="mb-4">Cadastro de Usuário</h2>
+      <h2 class="mb-4 fw-bold">Cadastro de Usuário</h2>
       <div class="mb-3">
         <label for="novoUsuarioNome" class="form-label">Nome:</label>
         <input type="text" class="form-control" id="novoUsuarioNome">
@@ -139,7 +139,7 @@
     </section>
 
     <section id="listarUsuarios" class="section-container d-none">
-      <h2 class="mb-4">Listar Usuários</h2>
+      <h2 class="mb-4 fw-bold">Listar Usuários</h2>
       <div class="row g-3 mb-3">
         <div class="col-md-5">
           <label for="filtroNomeUsuario" class="form-label">Nome:</label>
@@ -172,7 +172,7 @@
     </section>
 
     <section id="cadastroEvento" class="section-container d-none">
-      <h2 class="mb-4">Cadastro de Evento</h2>
+      <h2 class="mb-4 fw-bold">Cadastro de Evento</h2>
       <form id="formCadastroEvento">
         <div class="mb-3">
           <label for="nomeEvento" class="form-label">Nome do Evento:</label>
@@ -206,7 +206,7 @@
     </section>
 
     <section id="consultaEvento" class="section-container d-none">
-      <h2 class="mb-4">Consultar Eventos</h2>
+      <h2 class="mb-4 fw-bold">Consultar Eventos</h2>
       <div class="row g-3 mb-3">
         <div class="col-md-6 col-lg-3">
           <label for="filtroNomeEvento" class="form-label">Nome:</label>
@@ -247,7 +247,7 @@
     </section>
 
     <section id="editarEvento" class="section-container d-none">
-      <h2 class="mb-4">Editar Evento</h2>
+      <h2 class="mb-4 fw-bold">Editar Evento</h2>
       <input id="editEventoId" type="hidden">
       <div class="mb-3">
         <label for="editNomeEvento" class="form-label">Nome:</label>
@@ -281,7 +281,7 @@
     </section>
 
     <section id="cadastroPessoa" class="section-container d-none">
-      <h2 class="mb-4">Cadastro de Pessoa</h2>
+      <h2 class="mb-4 fw-bold">Cadastro de Pessoa</h2>
       <form id="formCadastroPessoa">
         <div class="mb-3">
           <label for="nomePessoa" class="form-label">Nome Completo:</label>
@@ -317,7 +317,7 @@
     </section>
 
     <section id="listarPessoas" class="section-container d-none">
-      <h2 class="mb-4">Listar Pessoas</h2>
+      <h2 class="mb-4 fw-bold">Listar Pessoas</h2>
       <div class="row g-3 mb-3">
         <div class="col-md-4">
           <label for="filtroNome" class="form-label">Nome:</label>
@@ -354,7 +354,7 @@
 
     <!-- Editar Pessoa (Modal seria melhor) -->
     <section id="editarPessoa" class="section-container d-none">
-      <h2 class="mb-4">Editar Pessoa</h2>
+      <h2 class="mb-4 fw-bold">Editar Pessoa</h2>
       <input id="editId" type="hidden">
       <div class="mb-3">
         <label for="editNome" class="form-label">Nome:</label>
@@ -390,7 +390,7 @@
     </section>
 
     <section id="solicitarCortesia" class="section-container d-none">
-      <h2 class="mb-4">Solicitar Cortesia</h2>
+      <h2 class="mb-4 fw-bold">Solicitar Cortesia</h2>
       <div class="mb-3">
         <label for="eventoIdSolicitar" class="form-label">Selecione o Evento:</label>
         <select class="form-select" id="eventoIdSolicitar"></select>
@@ -404,7 +404,7 @@
     </section>
 
     <section id="validarCortesia" class="section-container d-none">
-      <h2 class="mb-4">Validar Cortesia</h2>
+      <h2 class="mb-4 fw-bold">Validar Cortesia</h2>
       <div class="mb-3">
         <label for="eventoIdValidar" class="form-label">ID do Evento:</label>
         <input class="form-control" id="eventoIdValidar" type="number" placeholder="ID do Evento">
@@ -418,7 +418,7 @@
     </section>
 
     <section id="consultaCortesiasEvento" class="section-container d-none">
-      <h2 class="mb-4">Consultar Cortesias de um Evento</h2>
+      <h2 class="mb-4 fw-bold">Consultar Cortesias de um Evento</h2>
       <div class="row g-3 mb-3 align-items-end">
         <div class="col-md-6">
           <label for="eventosSelectCortesia" class="form-label">Selecione um evento:</label>

@@ -503,11 +503,11 @@ function editarEvento(evento) {
     document.getElementById("editResponsavelEvento").value = evento.responsavel;
     document.getElementById("editQtdCortesiasEvento").value = evento.quantidadeCortesias;
     limparMensagem("resEditarEvento");
-    mostrar('editarEvento'); // Mostra a seção de edição
+    mostrar('editarEvento');
 }
 
 async function salvarEdicaoEvento() {
-    const btn = document.getElementById("btnEditarEvento"); // ID CORRIGIDO
+    const btn = document.getElementById("btnEditarEvento");
     const resDivId = "resEditarEvento";
     if (!btn) { console.error("Botão #btnSalvarEdicaoEvento não encontrado"); return; }
     btn.disabled = true;
@@ -532,7 +532,7 @@ async function salvarEdicaoEvento() {
              exibirMensagem(resDivId, "Data final não pode ser anterior à data inicial.", "warning"); return;
         }
 
-        const dataEvento = { nome, dataInicio: new Date(dataInicio).toISOString(), dataFim: new Date(dataFim).toISOString(), local, responsavel, quantidadeCortesias };
+        const dataEvento = { nome, dataInicio: dataInicio + ":00", dataFim: dataFim + ":00", local, responsavel, quantidadeCortesias };
 
         const res = await authedFetch(`${API}/eventos/${id}`, {
             method: "PUT",
@@ -1076,20 +1076,19 @@ function formatarDataIso(isoDateString) {
 function formatarDataComHora(isoString) {
     if (!isoString) return '-';
     try {
-        const date = new Date(isoString);
-        // Verifica se a data é válida
-        if (isNaN(date.getTime())) return '-'; 
-        
-        // Usa Intl para formatação local (mais robusto)
-        const optionsDate = { day: '2-digit', month: '2-digit', year: 'numeric' };
-        const optionsTime = { hour: '2-digit', minute: '2-digit', hour12: false }; // Use UTC se necessário
-        
-        const dateFormatter = new Intl.DateTimeFormat('pt-BR', optionsDate);
-        const timeFormatter = new Intl.DateTimeFormat('pt-BR', optionsTime);
-        
-        return `${dateFormatter.format(date)} ${timeFormatter.format(date)}`;
+        // Tenta extrair YYYY-MM-DD e HH:MM diretamente da string
+        const match = isoString.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
+        if (match) {
+            const [, ano, mes, dia, hora, minuto] = match;
+            // Retorna no formato dd/MM/yyyy HH:mm
+            return `${dia}/${mes}/${ano} ${hora}:${minuto}`;
+        } else {
+            // Fallback: Se não conseguir extrair, tenta formatar a data apenas (sem hora)
+            console.warn("Não foi possível extrair data e hora de:", isoString, ". Formatando apenas a data.");
+            return formatarDataIso(isoString);
+        }
     } catch (e) {
-        console.error("Erro ao formatar data com hora:", isoString, e);
+        console.error("Erro ao formatar data com hora (ignorando timezone):", isoString, e);
         return '-';
     }
 }
