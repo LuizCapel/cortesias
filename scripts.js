@@ -77,17 +77,13 @@ function inicializarTooltips(containerElement) {
     });
 }
 
-// --- Lógica de Login, Permissões e Carregamento de Dados do Usuário --- 
 
-// **NOVA FUNÇÃO:** Carrega permissões e dados do usuário logado
 async function carregarDadosUsuario() {
-//    console.log("Tentando carregar dados do usuário (/usuario/me)");
     try {
         const res = await authedFetch(`${API}/usuario/me`);
         if (res.ok) {
             const userData = await res.json();
             permissoes = Array.isArray(userData.permissoes) ? userData.permissoes : [];
-//            console.log("Dados do usuário carregados com sucesso. Permissões:", permissoes);
             // Atualiza localStorage com as permissões frescas
             localStorage.setItem("userPermissoes", JSON.stringify(permissoes));
             return true; // Indica sucesso
@@ -95,7 +91,6 @@ async function carregarDadosUsuario() {
             console.error(`Erro ao buscar /usuario/me: ${res.status}`);
             // Se o token for inválido (401, 403), força logout
             if (res.status === 401 || res.status === 403) {
-//                console.log("Token inválido ou expirado. Forçando logout.");
                 logout();
             }
             return false; // Indica falha
@@ -111,11 +106,14 @@ async function carregarDadosUsuario() {
 }
 
 async function realizarLogin() {
+  const btn = document.getElementById("btnLogin");
+  btn.disabled = true;
+
   const email = document.getElementById("loginEmail").value;
   const senha = document.getElementById("loginSenha").value;
   const mensagemDiv = document.getElementById("loginMensagem");
 
-  limparMensagem("loginMensagem"); // Limpa mensagem antes de tentar
+  limparMensagem("loginMensagem");
 
   try {
     const res = await fetch(`${API}/auth/login`, {
@@ -140,15 +138,19 @@ async function realizarLogin() {
           // Se falhar ao carregar permissões, exibe erro e força logout
           exibirMensagem("loginMensagem", "Erro ao carregar dados do usuário após login.", "danger");
           logout(); // Garante que o usuário não fique em estado inconsistente
+	  btn.disabled = false;
       }
 
     } else {
       const errorMsg = await res.text();
       exibirMensagem("loginMensagem", errorMsg || "Email ou senha inválidos.", "danger");
+      btn.disabled = false;
     }
   } catch (error) {
     console.error("Erro na função realizarLogin:", error);
     exibirMensagem("loginMensagem", "Erro ao tentar fazer login. Verifique a conexão.", "danger");
+  } finally {
+      btn.disabled = false;
   }
 }
 
@@ -407,7 +409,7 @@ async function cadastrarEvento() {
              exibirMensagem(resDivId, "Data final não pode ser anterior à data inicial.", "warning"); return;
         }
 
-        const dataEvento = { nome, dataInicio: new Date(dataInicio).toISOString(), dataFim: new Date(dataFim).toISOString(), local, responsavel, quantidadeCortesias };
+        const dataEvento = { nome, dataInicio: dataInicio + ":00", dataFim: dataFim + ":00", local, responsavel, quantidadeCortesias };
 
         const res = await authedFetch(`${API}/eventos`, {
             method: "POST",
