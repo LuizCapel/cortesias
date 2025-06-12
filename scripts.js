@@ -1,5 +1,4 @@
 const API = "https://exclusive-krista-luizcapel-78430027.koyeb.app/api";
-//const API = "http://186.233.152.174:8080/api";
 //const API = "http://localhost:8080/api";
 
 let token = null;
@@ -439,6 +438,8 @@ function limparFormularioEvento() {
 }
 
 async function buscarEventos() {
+    document.getElementById("linkGerado").classList.add('d-none');
+
     const nome = document.getElementById("filtroNomeEvento").value;
     const data = document.getElementById("filtroDataEvento").value;
     const local = document.getElementById("filtroLocalEvento").value;
@@ -597,7 +598,26 @@ function gerarLinkPublico(eventoId) {
         return;
     }
     inputLink.value = link;
+    gerarLinkComQr(link);
     divLink.classList.remove('d-none');
+}
+
+async function gerarLinkComQr(url) {
+  const res = await fetch(`${API}/links/encurtar`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    },
+    body: JSON.stringify({ url })
+  });
+
+  const data = await res.json();
+  console.log("Link:", data.shortUrl);
+  console.log("QR Code:", data.qrCodeUrl);
+
+  document.getElementById("resultadoLink").innerText = data.shortUrl;
+  document.getElementById("qrcode").src = data.qrCodeUrl;
 }
 
 function copiarLink() {
