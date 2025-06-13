@@ -482,7 +482,7 @@ async function buscarEventos() {
                 <td>
                   <button class='btn btn-warning btn-sm me-1' onclick='editarEvento(${eventoJsonString})' data-bs-toggle="tooltip" data-bs-placement="top" title="Editar Evento"><i class="bi bi-pencil-square"></i></button>
                   <button class='btn btn-danger btn-sm me-1' onclick='excluirEvento(${e.id})' data-bs-toggle="tooltip" data-bs-placement="top" title="Excluir Evento"><i class="bi bi-trash"></i></button>
-                  <button class='btn btn-info btn-sm' onclick="gerarLinkPublico(${e.id})" data-bs-toggle="tooltip" data-bs-placement="top" title="Gerar Link Público"><i class="bi bi-link-45deg"></i></button>
+                  <button class='btn btn-info btn-sm' onclick="gerarLinkPublico(${e.id})" data-bs-toggle="tooltip" data-bs-placement="top" title="Gerar Link e QrCode"><i class="bi bi-link-45deg"></i></button>
                 </td>
             `;
         });
@@ -592,14 +592,38 @@ function gerarLinkPublico(eventoId) {
     const link = `${window.location.origin}${basePath}/solicitar-cortesia.html?evento=${eventoId}`;
     
     const divLink = document.getElementById("linkGerado");
-    const inputLink = document.getElementById("inputLinkPublico");
+//    const inputLink = document.getElementById("inputLinkPublico");
+    const inputLink = document.getElementById("resultadoLink");
     if (!divLink || !inputLink) {
         console.error("Elementos #linkGerado ou #inputLinkPublico não encontrados.");
         return;
     }
-    inputLink.value = link;
-    gerarLinkComQr(link);
+    inputLink.innerText = link;
+//    gerarLinkComQr(link);
+    gerarQr(link);
+
     divLink.classList.remove('d-none');
+}
+
+async function gerarQr(url) {
+url = "http://www.google.com.br";
+  const img = document.getElementById('qrcode');
+  console.log("Link:", url);
+  console.log("Link:", encodeURIComponent(url));
+  await fetch(`${API}/qrcode?text=${encodeURIComponent(url)}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    }
+  }).then(res => res.json())
+  .then(data => {
+    document.getElementById("qrcode").src = "data:image/png;base64," + data.base64;
+  })
+  .catch(err => {
+    console.error("Erro ao gerar QR Code:", err);
+  });
+
 }
 
 async function gerarLinkComQr(url) {
