@@ -606,10 +606,7 @@ function gerarLinkPublico(eventoId) {
 }
 
 async function gerarQr(url) {
-url = "http://www.google.com.br";
   const img = document.getElementById('qrcode');
-  console.log("Link:", url);
-  console.log("Link:", encodeURIComponent(url));
   await fetch(`${API}/qrcode?text=${encodeURIComponent(url)}`, {
     method: "GET",
     headers: {
