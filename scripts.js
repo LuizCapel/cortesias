@@ -4,6 +4,36 @@ const API = "https://exclusive-krista-luizcapel-78430027.koyeb.app/api";
 let token = null;
 let permissoes = []; // Initialize as an empty array
 
+let mapa = null;
+
+let marcadores = [];
+
+function atualizarMapa() {
+    exibirMensagem("mapaMensagem", "Carregando os FoodTrucks no mapa.", "warning");
+    let data = document.getElementById("data-selecionada").value;
+    if (!data) return;
+
+    // Limpa marcadores antigos
+    marcadores.forEach(m => mapa.removeLayer(m));
+    marcadores = [];
+
+    authedFetch(`${API}/mapa-foodtrucks?data=${data}`)
+        .then(resp => resp.json())
+        .then(lista => {
+            lista.forEach(ft => {
+                let marcador = L.marker([ft.latitude, ft.longitude])
+                    .addTo(mapa)
+                    .bindPopup(`<b>${ft.nome}</b><br>${ft.cidade}`);
+                marcadores.push(marcador);
+            });
+        });
+    setTimeout(function() {
+        limparMensagem("mapaMensagem");
+	}, 5000);
+}
+
+
+
 // --- Funções Auxiliares --- 
 
 function authedFetch(url, options = {}) {
@@ -177,6 +207,7 @@ function configurarMenuPrincipal() {
     document.getElementById('btnGerenciarEventos').classList.toggle('d-none', !(safePermissoes.includes('GERENTE_EVENTOS') || safePermissoes.includes('ADMIN')));
     document.getElementById('btnGerenciarPessoas').classList.toggle('d-none', !(safePermissoes.includes('GERENTE_PESSOAS') || safePermissoes.includes('ADMIN')));
     document.getElementById('btnGerenciarCortesias').classList.toggle('d-none', !(safePermissoes.includes('GERENTE_CORTESIAS') || safePermissoes.includes('ADMIN')));
+    document.getElementById('btnGerenciarFoodtrucks').classList.toggle('d-none', !(safePermissoes.includes('GERENTE_FOODTRUCKS') || safePermissoes.includes('ADMIN')));
     document.getElementById('btnGerenciarUsuarios').classList.toggle('d-none', !safePermissoes.includes('ADMIN'));
 }
 
@@ -193,6 +224,14 @@ function toggleSubmenu(submenuIdToShow) {
             menu.classList.add('d-none'); // Garante que outros submenus estejam fechados
         }
     });
+    
+    if (submenuIdToShow === 'menuFoodtrucks') {
+        exibirMensagem("mapaMensagem", "Selecione uma data.", "success");
+        if (mapa == null) {
+            mapa = L.map('mapa').setView([-23.2927, -51.1732], 5); // centro do Brasil
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapa);
+        }
+    }
 }
 
 function mostrar(sectionIdToShow) {

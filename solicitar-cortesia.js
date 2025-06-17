@@ -60,9 +60,12 @@ async function buscarPessoa() {
   cpfInput.value = cpf;
   
   if (!cpf) {
-      exibirMensagem("Por favor, digite um CPF válido.", "warning");
+      exibirMensagem("Por favor, digite o CPF.", "warning");
       dadosPessoaDiv.classList.add("d-none"); // Garante que os dados fiquem ocultos
       return;
+  }
+  if (!validarCPF(cpf)) {
+      exibirMensagem("CPF inválido.", "warning"); return;
   }
 
   exibirMensagem("Buscando dados...", "info"); // Feedback para o usuário
@@ -107,11 +110,43 @@ async function buscarPessoa() {
   }
 }
 
+function validarCPF(cpf) {
+  cpf = String(cpf).replace(/[^\d]+/g, "");
+  if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+  let soma = 0, resto;
+  for (let i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+  resto = (soma * 10) % 11;
+  if (resto === 10 || resto === 11) resto = 0;
+  if (resto !== parseInt(cpf.substring(9, 10))) return false;
+  soma = 0;
+  for (let i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+  resto = (soma * 10) % 11;
+  if (resto === 10 || resto === 11) resto = 0;
+  return resto === parseInt(cpf.substring(10, 11));
+}
+
 async function solicitarCortesia() {
   // Validação simples dos campos (pode ser mais robusta)
-  if (!nomeInput.value || !dataNascimentoInput.value || !cidadeInput.value || !telefoneInput.value || !emailInput.value) {
+  if (!cpfInput.value || !nomeInput.value || !dataNascimentoInput.value || !cidadeInput.value || !telefoneInput.value || !emailInput.value) {
       exibirMensagem("Por favor, preencha todos os dados da pessoa.", "warning");
       return;
+  }
+
+  const cpf = cpfInput.value.replace(/\D/g, ''); // Remove não-dígitos do CPF
+  cpfInput.value = cpf;
+  const dataNascimento = dataNascimentoInput.value;
+  const cidade = cidadeInput.value.trim();
+  const telefone = telefoneInput.value.replace(/\D/g, "");
+  const email = emailInput.value.trim();
+
+  if (!validarCPF(cpf)) {
+      exibirMensagem("CPF inválido.", "warning"); return;
+  }
+  if (telefone.length < 10) {
+      exibirMensagem("Telefone inválido (mínimo 10 dígitos com DDD).", "warning"); return;
+  }
+  if (!validarEmail(email)) {
+      exibirMensagem("Email inválido.", "warning"); return;
   }
 
   const payload = {
@@ -147,6 +182,11 @@ async function solicitarCortesia() {
       console.error("Erro ao solicitar cortesia:", error);
       exibirMensagem(`Erro na solicitação: ${error.message}`, "danger");
   }
+}
+
+function validarEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(String(email).toLowerCase());
 }
 
 async function novaCortesia() {

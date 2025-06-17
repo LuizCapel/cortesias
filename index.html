@@ -6,6 +6,7 @@
   <title>Sistema de Cortesias - Bootstrap</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     body {
 /*      background-color: #f8f9fa; */
@@ -63,9 +64,16 @@
           <button class="btn btn-primary d-none" id="btnGerenciarEventos" onclick="toggleSubmenu('menuEventos')">Gerenciar Eventos</button>
           <button class="btn btn-primary d-none" id="btnGerenciarPessoas" onclick="toggleSubmenu('menuPessoas')">Gerenciar Pessoas</button>
           <button class="btn btn-primary d-none" id="btnGerenciarCortesias" onclick="toggleSubmenu('menuCortesias')">Gerenciar Cortesias</button>
+          <button class="btn btn-primary d-none" id="btnGerenciarFoodtrucks" onclick="toggleSubmenu('menuFoodtrucks')">Acompanhar Foodtrucks</button>
           <button class="btn btn-danger d-none" id="btnGerenciarUsuarios" onclick="toggleSubmenu('menuUsuarios')">Gerenciar Usuários</button>
         </div>
       </div>
+    </div>
+
+    <div id="menuFoodtrucks" class="submenu section-container mx-auto d-none" >
+      <div id="mapaMensagem" class="alert mt-3 d-none"></div>
+      <input type="date" id="data-selecionada" class="form-control" onchange="atualizarMapa()" />
+      <div id="mapa" style="height: 600px;"></div>
     </div>
 
     <div id="menuEventos" class="submenu section-container mx-auto d-none" style="max-width: 550px;">
@@ -463,6 +471,7 @@
   </div> 
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="scripts.js"></script>
 </body>
 </html>
