@@ -207,7 +207,7 @@ function configurarMenuPrincipal() {
     document.getElementById('btnGerenciarEventos').classList.toggle('d-none', !(safePermissoes.includes('GERENTE_EVENTOS') || safePermissoes.includes('ADMIN')));
     document.getElementById('btnGerenciarPessoas').classList.toggle('d-none', !(safePermissoes.includes('GERENTE_PESSOAS') || safePermissoes.includes('ADMIN')));
     document.getElementById('btnGerenciarCortesias').classList.toggle('d-none', !(safePermissoes.includes('GERENTE_CORTESIAS') || safePermissoes.includes('ADMIN')));
-    document.getElementById('btnGerenciarFoodtrucks').classList.toggle('d-none', !(safePermissoes.includes('GERENTE_FOODTRUCKS') || safePermissoes.includes('ADMIN')));
+    document.getElementById('btnGerenciarFoodtrucks').classList.toggle('d-none', !(safePermissoes.includes('ACOMPANHA_FOODTRUCKS') || safePermissoes.includes('ADMIN')));
     document.getElementById('btnGerenciarUsuarios').classList.toggle('d-none', !safePermissoes.includes('ADMIN'));
 }
 
@@ -344,7 +344,7 @@ async function listarUsuarios() {
       tabelaBody.innerHTML = ''; // Limpa o tbody
       data.forEach(u => {
         const userPerms = Array.isArray(u.permissoes) ? u.permissoes : []; 
-        const permissoesCheckboxes = ["ADMIN", "GERENTE_EVENTOS", "GERENTE_PESSOAS", "GERENTE_CORTESIAS"].map(p =>
+        const permissoesCheckboxes = ["ADMIN", "GERENTE_EVENTOS", "GERENTE_PESSOAS", "GERENTE_CORTESIAS", "ACOMPANHA_FOODTRUCKS"].map(p =>
             `<div class="form-check form-check-inline">
                <input class="form-check-input" type="checkbox" name="permissao_${u.id}" value="${p}" ${userPerms.includes(p) ? "checked" : ""} id="perm_${u.id}_${p}">
                <label class="form-check-label small" for="perm_${u.id}_${p}">${p.replace('GERENTE_', '')}</label>
