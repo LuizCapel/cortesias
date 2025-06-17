@@ -347,7 +347,7 @@ async function listarUsuarios() {
         const permissoesCheckboxes = ["ADMIN", "GERENTE_EVENTOS", "GERENTE_PESSOAS", "GERENTE_CORTESIAS", "ACOMPANHA_FOODTRUCKS"].map(p =>
             `<div class="form-check form-check-inline">
                <input class="form-check-input" type="checkbox" name="permissao_${u.id}" value="${p}" ${userPerms.includes(p) ? "checked" : ""} id="perm_${u.id}_${p}">
-               <label class="form-check-label small" for="perm_${u.id}_${p}">${p.replace('GERENTE_', '')}</label>
+               <label class="form-check-label small" for="perm_${u.id}_${p}">${p.replace('GERENTE_', '').replace('ACOMPANHA_', '')}</label>
              </div>`
           ).join("");
           
