@@ -28,8 +28,8 @@ function atualizarMapa() {
             });
         });
     setTimeout(function() {
-        limparMensagem("mapaMensagem");
-	}, 5000);
+        	limparMensagem("mapaMensagem");
+	}, 7000);
 }
 
 
@@ -473,7 +473,40 @@ async function cadastrarEvento() {
 function limparFormularioEvento() {
     const form = document.getElementById("formCadastroEvento");
     if (form) form.reset();
-    limparMensagem("resCadastroEvento");
+    carregaCampoDataEvento('dataInicioEvento');
+    carregaCampoDataEvento('dataFimEvento');
+    setTimeout(function() {
+	    limparMensagem("resCadastroEvento");
+	  }, 2000);
+
+}
+
+function carregaCampoDataEvento(nomeCampo) {
+    const input = document.getElementById(nomeCampo);
+    const now = new Date();
+
+    // Força o horário para 16:00
+    if (nomeCampo == 'dataInicioEvento') {
+    	now.setHours(16);
+    } else {
+    	now.setHours(22);
+    }
+    now.setMinutes(0);
+    now.setSeconds(0);
+    now.setMilliseconds(0);
+
+    // Função para garantir dois dígitos
+    const pad = (num) => num.toString().padStart(2, '0');
+
+    const year = now.getFullYear();
+    const month = pad(now.getMonth() + 1); // Janeiro = 0
+    const day = pad(now.getDate());
+    const hours = pad(now.getHours());
+    const minutes = pad(now.getMinutes());
+
+    // Monta no formato local "YYYY-MM-DDTHH:MM"
+    const formatted = `${year}-${month}-${day}T${hours}:${minutes}`;
+    input.value = formatted;
 }
 
 async function buscarEventos() {
