@@ -1,6 +1,13 @@
 const API = "https://exclusive-krista-luizcapel-78430027.koyeb.app/api";
 //const API = "http://localhost:8080/api";
 
+const iconeCaminhao = L.icon({
+	iconUrl: 'https://cdn-icons-png.flaticon.com/512/3243/3243532.png',
+	iconSize: [40,40],
+	iconAnchor: [20,40],
+	popupAnchor: [0,-40]
+});
+
 let token = null;
 let permissoes = []; // Initialize as an empty array
 
@@ -21,7 +28,7 @@ function atualizarMapa() {
         .then(resp => resp.json())
         .then(lista => {
             lista.forEach(ft => {
-                let marcador = L.marker([ft.latitude, ft.longitude])
+                let marcador = L.marker([ft.latitude, ft.longitude], {icon: iconeCaminhao})
                     .addTo(mapa)
                     .bindPopup(`<b>${ft.nome}</b><br>${ft.cidade}`);
                 marcadores.push(marcador);
